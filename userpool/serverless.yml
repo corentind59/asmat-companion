@@ -1,0 +1,70 @@
+component: aws-cloudformation
+org: corentindelannoy2
+app: asmat-companion
+name: cognito-user-pool
+
+inputs:
+  name: ${app}-user-pool-${stage}
+  region: eu-west-1
+  template:
+    AWSTemplateFormatVersion: '2010-09-09'
+    Description: Asmat Companion Cognito components
+    Resources:
+      UserPool:
+        Type: AWS::Cognito::UserPool
+        Properties:
+          AdminCreateUserConfig:
+            AllowAdminCreateUserOnly: true
+          AliasAttributes:
+          - email
+          MfaConfiguration: OFF
+          Policies:
+            PasswordPolicy:
+              MinimumLength: 8
+              RequireUppercase: true
+              RequireLowercase: true
+              RequireNumbers: true
+              RequireSymbols: false
+          Schema:
+          - Name: given_name
+            Required: true
+          - Name: family_name
+            Required: true
+          - Name: email
+            Required: true
+          UserPoolName: AsmatCompanion-UserPool-${stage}
+      UserPoolClient:
+        Type: AWS::Cognito::UserPoolClient
+        Properties:
+          ClientName: AsmatCompanionFrontend-${stage}
+          ExplicitAuthFlows:
+          - ALLOW_ADMIN_USER_PASSWORD_AUTH
+          - ALLOW_USER_SRP_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+          GenerateSecret: false
+          PreventUserExistenceErrors: ENABLED
+          SupportedIdentityProviders:
+          - COGNITO
+          UserPoolId:
+            Ref: UserPool
+      UserPoolDomain:
+        Type: AWS::Cognito::UserPoolDomain
+        Properties:
+          UserPoolId:
+            Ref: UserPool
+          Domain: asmat-companion
+    Outputs:
+      UserPoolId:
+        Description: User Pool ID
+        Value:
+          Ref: UserPool
+      UserPoolArn:
+        Description: User Pool ARN
+        Value:
+          Fn::GetAtt:
+          - UserPool
+          - Arn
+      FrontendClientId:
+        Description: User Pool client ID for frontend authentication
+        Value:
+          Ref: UserPoolClient

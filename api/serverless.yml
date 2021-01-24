@@ -1,0 +1,12 @@
+component: express
+org: corentindelannoy2
+app: asmat-companion
+name: api
+
+inputs:
+  region: eu-west-1
+  src:
+    src: ./
+    hook: npm run build
+    dist: build
+  roleName: ${output:asmat-companion:express-lambda-permissions.name}
