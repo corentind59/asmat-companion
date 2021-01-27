@@ -96,7 +96,7 @@ export default function LoginForm(props: LoginFormProps) {
       <Button type="submit"
               fullWidth
               variant="contained"
-              color="primary"
+              color="secondary"
               disabled={isLoading}
               className={classes.submit}>
         {isLoading ? 'Connexion...' : 'Se connecter'}

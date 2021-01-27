@@ -1,26 +1,28 @@
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import Home from '../home/Home';
+import { BrowserRouter, Redirect, Switch } from 'react-router-dom';
+import HomePage from '../home/HomePage';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
 import LoginPage from '../auth/views/LoginPage';
 import ProtectedRoute from '../auth/components/ProtectedRoute';
 import Authenticator from '../auth/components/Authenticator';
+import UnprotectedRoute from '../auth/components/UnprotectedRoute';
+import { MuiThemeProvider } from '@material-ui/core';
+import theme from './theme';
 
 
 function App() {
   return (
-    <Authenticator>
-      <BrowserRouter>
-        <CssBaseline/>
-        <Container component="main">
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline/>
+      <Authenticator>
+        <BrowserRouter>
           <Switch>
-            <Route path="/login" exact component={LoginPage}/>
-            <ProtectedRoute path="/" exact component={Home}/>
+            <UnprotectedRoute path="/login" exact component={LoginPage}/>
+            <ProtectedRoute path="/" exact component={HomePage}/>
             <Redirect to="/"/>
           </Switch>
-        </Container>
-      </BrowserRouter>
-    </Authenticator>
+        </BrowserRouter>
+      </Authenticator>
+    </MuiThemeProvider>
   );
 }
 

@@ -1,35 +1,26 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
-import { Auth } from 'aws-amplify';
-import { AuthContext } from '../context';
+import { PropsWithChildren } from 'react';
+import { AuthContext, AuthContextValue } from '../context';
+import useAuthenticationFlow from '../hooks/useAuthenticationFlow';
 
 export default function Authenticator({ children }: PropsWithChildren<{}>) {
-  const [isAuthenticated, setAuthenticated] = useState(false);
-  const [isAuthenticating, setAuthenticating] = useState(true);
-  useEffect(() => {
-    if (isAuthenticating) {
-      authenticate();
-    }
-  }, [isAuthenticating]);
-
-  async function authenticate() {
-    setAuthenticated(false);
-    try {
-      await Auth.currentSession();
-      setAuthenticated(true);
-    } catch (e: unknown) {
-      if (e !== 'No current user') {
-        throw e;
-      }
-    }
-    setAuthenticating(false);
-  }
-  const reloadAuth = () => setAuthenticating(true);
+  const authentication = useAuthenticationFlow();
+  const { refreshAuthSession, isAuthenticating } = authentication;
 
   if (isAuthenticating) {
     return null;
   }
+
+  const contextValue: AuthContextValue = authentication.isAuthenticated ? {
+    isAuthenticated: true,
+    refreshAuthSession,
+    signOut: authentication.signOut
+  } : {
+    isAuthenticated: false,
+    refreshAuthSession
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, reloadAuth }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

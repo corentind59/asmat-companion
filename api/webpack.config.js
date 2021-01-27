@@ -19,7 +19,7 @@ module.exports = {
     extensions: ['.ts', '.ts', '.js'],
   },
   output: {
-    filename: 'app.js',
+    filename: 'index.js',
     libraryTarget: 'commonjs-module',
     path: path.resolve(__dirname, 'build'),
   },
