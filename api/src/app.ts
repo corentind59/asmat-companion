@@ -1,16 +1,22 @@
 import express from 'express';
-import expressive, { handle, Ok } from '@corentind/expressive';
-import cognitoProtected from './auth/cognito-middleware';
+import expressive from '@corentind/expressive';
 import cors from 'cors';
+import mongoDB from './database';
+import { AsmatRoutes } from './asmat/router';
+import { handleMongooseError } from './utils/validation';
 
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(mongoDB());
 
-app.get('/public', handle(() => new Ok({ message: 'success' })));
-app.get('/private', cognitoProtected(), handle(() => new Ok({ message: 'success' })));
+// Routes
+app.use(AsmatRoutes);
 
+// Expressive
+app.use(handleMongooseError());
 app.use(expressive());
 
 module.exports = app;

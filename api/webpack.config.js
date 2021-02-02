@@ -22,5 +22,5 @@ module.exports = {
     filename: 'index.js',
     libraryTarget: 'commonjs-module',
     path: path.resolve(__dirname, 'build'),
-  },
+  }
 };

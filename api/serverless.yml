@@ -7,8 +7,9 @@ inputs:
   region: eu-west-1
   env:
     EXPRESS_COGNITO_USER_POOL_ID: ${output:asmat-companion:cognito-user-pool.UserPoolId}
+    EXPRESS_AWS_SSM_CONFIG_PATH: /asmatcompanion/${stage}
   src:
     src: ./
-    hook: yarn build
+    hook: npm run build
     dist: build
   roleName: ${output:asmat-companion:express-lambda-permissions.name}

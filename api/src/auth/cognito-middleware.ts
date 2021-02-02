@@ -8,7 +8,7 @@ const cognito = new CognitoExpress({
   tokenUse: 'access'
 });
 
-export default function cognitoProtected(): express.RequestHandler {
+export default function secured(): express.RequestHandler {
   return (req, res, next) => {
     const authorization = req.header('Authorization') ?? '';
     const token = authorization.replace('Bearer ', '');
