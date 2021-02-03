@@ -9,6 +9,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "formik": "^2.2.6",
+    "mdi-material-ui": "^6.21.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -16,7 +17,7 @@
     "yup": "^0.32.8"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "BROWSER=\"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge\" react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
   },

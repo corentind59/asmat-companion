@@ -1,5 +1,5 @@
-import { BrowserRouter, Redirect, Switch } from 'react-router-dom';
-import HomePage from '../home/HomePage';
+import { BrowserRouter, Switch } from 'react-router-dom';
+import HomePage from '../home/views/HomePage';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import LoginPage from '../auth/views/LoginPage';
 import ProtectedRoute from '../auth/components/ProtectedRoute';
@@ -17,8 +17,7 @@ function App() {
         <BrowserRouter>
           <Switch>
             <UnprotectedRoute path="/login" exact component={LoginPage}/>
-            <ProtectedRoute path="/" exact component={HomePage}/>
-            <Redirect to="/"/>
+            <ProtectedRoute path="/" component={HomePage}/>
           </Switch>
         </BrowserRouter>
       </Authenticator>

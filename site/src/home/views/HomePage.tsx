@@ -3,17 +3,15 @@ import AppBar from '@material-ui/core/AppBar';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import { Switch } from 'react-router-dom';
-import Menu from '@material-ui/core/Menu';
-import IconButton from '@material-ui/core/IconButton';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
-import { AccountCircle, ExitToApp } from '@material-ui/icons';
-import { MouseEventHandler, useState } from 'react';
-import { ListItemIcon, MenuItem } from '@material-ui/core';
-import { useAuthSession } from '../auth/context';
+import DashboardPage from '../../dashboard/views/DashboardPage';
+import AccountInfo from '../components/AccountInfo';
+import NavigationMenu from '../components/NavigationMenu';
+import AsmatSearchPage from '../../asmat/views/AsmatSearchPage';
 
 const drawerWidth = '20vw';
+const drawerMinWidth = '256px';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,10 +26,12 @@ const useStyles = makeStyles(theme => ({
   },
   drawer: {
     width: drawerWidth,
+    minWidth: drawerMinWidth,
     flexShrink: 0
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
+    minWidth: drawerMinWidth
   },
   drawerContainer: {
     overflowY: 'auto'
@@ -44,16 +44,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function HomePage() {
   const classes = useStyles();
-  const [accountMenuAnchor, setAccountMenuAnchor] = useState<Element | null>(null);
-  const authSession = useAuthSession();
-  const handleAccountClick: MouseEventHandler = event => setAccountMenuAnchor(event.currentTarget);
-  const handleAccountClose: MouseEventHandler = () => setAccountMenuAnchor(null);
-  const handleSignOut = async () => {
-    if (authSession.isAuthenticated) {
-      await authSession.signOut();
-      authSession.refreshAuthSession();
-    }
-  }
 
   return (
     <div className={classes.root}>
@@ -66,20 +56,7 @@ export default function HomePage() {
             </Typography>
           </Box>
           <Box>
-            <IconButton edge="end" onClick={handleAccountClick}>
-              <AccountCircle/>
-            </IconButton>
-            <Menu anchorEl={accountMenuAnchor}
-                  open={!!accountMenuAnchor}
-                  onClose={handleAccountClose}
-                  keepMounted>
-              <MenuItem onClick={handleSignOut}>
-                <ListItemIcon>
-                  <ExitToApp/>
-                </ListItemIcon>
-                Déconnexion
-              </MenuItem>
-            </Menu>
+            <AccountInfo/>
           </Box>
         </Toolbar>
       </AppBar>
@@ -89,13 +66,16 @@ export default function HomePage() {
                 paper: classes.drawerPaper
               }}>
         <div className={classes.drawerContainer}>
-          <List/>
+          <Toolbar/>
+          <NavigationMenu/>
         </div>
       </Drawer>
       <main className={classes.content}>
         <Toolbar/>
         <Switch>
-
+          <Route path="/asmats/search" exact component={AsmatSearchPage}/>
+          <Route path="/" exact component={DashboardPage}/>
+          <Redirect to="/"/>
         </Switch>
       </main>
     </div>
