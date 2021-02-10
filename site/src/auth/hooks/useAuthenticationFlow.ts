@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Auth } from '@aws-amplify/auth';
 import { AuthContextValue } from '../context';
+import { CognitoUserSession } from 'amazon-cognito-identity-js';
+import { UserInfo } from '../models/user-info';
 
 type UseAuthorizationFlowResult = AuthContextValue & {
   isAuthenticating: boolean
@@ -9,11 +11,15 @@ type UseAuthorizationFlowResult = AuthContextValue & {
 export default function useAuthenticationFlow(): UseAuthorizationFlowResult {
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [isAuthenticating, setAuthenticating] = useState(true);
+  const [session, setSession] = useState<CognitoUserSession | null>(null);
   const refreshAuthSession = () => setAuthenticating(true);
+
   const authenticate = async () => {
     setAuthenticated(false);
+    setSession(null);
     try {
-      await Auth.currentSession();
+      const currentSession = await Auth.currentSession();
+      setSession(currentSession);
       setAuthenticated(true);
     } catch (e: unknown) {
       if (e !== 'No current user') {
@@ -38,7 +44,9 @@ export default function useAuthenticationFlow(): UseAuthorizationFlowResult {
     result = {
       ...result,
       isAuthenticated: true,
-      signOut: () => Auth.signOut()
+      authenticationInfo: {
+        userInfo: session!.getIdToken().payload as UserInfo
+      }
     }
   }
 

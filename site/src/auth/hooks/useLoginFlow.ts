@@ -1,12 +1,12 @@
 import { Auth } from '@aws-amplify/auth';
 import { useState } from 'react';
-import { useAuthSession } from '../context';
+import { useAuthContext } from '../context';
 
 export type LoginResult =  true | 'NEW_PASSWORD_REQUIRED';
 
 export default function useLoginFlow() {
   const [user, setUser] = useState<any>(null);
-  const { refreshAuthSession } = useAuthSession();
+  const { refreshAuthSession } = useAuthContext();
 
   const login = async (username: string, password: string): Promise<LoginResult> => {
     try {

@@ -1,12 +1,18 @@
 import { createContext, useContext } from 'react';
+import { UserInfo } from './models/user-info';
 
 type CommonAuthContextValue = {
   refreshAuthSession: () => void
 }
+
+type AuthenticationInfo = {
+  userInfo: UserInfo
+}
 type AuthenticatedAuthContextValue = CommonAuthContextValue & {
   isAuthenticated: true,
-  signOut: () => Promise<void>
+  authenticationInfo: AuthenticationInfo
 }
+
 type UnauthenticatedAuthContextValue = CommonAuthContextValue & {
   isAuthenticated: false
 }
@@ -15,6 +21,6 @@ export type AuthContextValue = AuthenticatedAuthContextValue | UnauthenticatedAu
 
 export const AuthContext = createContext<AuthContextValue>(null as unknown as any);
 
-export function useAuthSession() {
+export function useAuthContext() {
   return useContext(AuthContext);
 }

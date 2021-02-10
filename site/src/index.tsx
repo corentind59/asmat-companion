@@ -6,11 +6,11 @@ import configureAmplify from './amplify';
 
 configureAmplify();
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App/>
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+ReactDOM.unstable_createRoot(document.getElementById('root')!)
+  .render(
+    <React.StrictMode>
+      <App/>
+    </React.StrictMode>
+  );
 
 // reportWebVitals();

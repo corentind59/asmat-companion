@@ -5,22 +5,31 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { MouseEventHandler, useState } from 'react';
-import { useAuthSession } from '../../auth/context';
+import { useAuthContext } from '../../auth/context';
+import { Grid, Typography } from '@material-ui/core';
+import { Auth } from '@aws-amplify/auth';
 
 export default function AccountInfo() {
   const [accountMenuAnchor, setAccountMenuAnchor] = useState<Element | null>(null);
-  const authSession = useAuthSession();
+  const authSession = useAuthContext();
   const handleAccountClick: MouseEventHandler = event => setAccountMenuAnchor(event.currentTarget);
   const handleAccountClose: MouseEventHandler = () => setAccountMenuAnchor(null);
   const handleSignOut = async () => {
-    if (authSession.isAuthenticated) {
-      await authSession.signOut();
+      await Auth.signOut();
       authSession.refreshAuthSession();
-    }
   };
 
+  if (!authSession.isAuthenticated) {
+    return null;
+  }
+
+  const { given_name, family_name } = authSession.authenticationInfo.userInfo;
+
   return (
-    <>
+    <Grid container alignItems="center">
+      <Typography component="span" variant="subtitle1">
+        {`${given_name} ${family_name}`}
+      </Typography>
       <IconButton edge="end" onClick={handleAccountClick}>
         <AccountCircleIcon/>
       </IconButton>
@@ -35,6 +44,6 @@ export default function AccountInfo() {
           Déconnexion
         </MenuItem>
       </Menu>
-    </>
+    </Grid>
   );
 }

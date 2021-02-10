@@ -1,4 +1,3 @@
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
@@ -6,8 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useState } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
+import ButtonProgress from '../../common/components/ButtonProgress';
 
 export type LoginFormValues = {
   username: string;
@@ -27,13 +26,6 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
-  },
-  buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12
   }
 }));
 
@@ -92,16 +84,15 @@ export default function LoginForm(props: LoginFormProps) {
                  error={formik.touched.password && !!formik.errors.password}
                  helperText={formik.touched.password && formik.errors.password}
                  disabled={isLoading}/>
-      { authError && <Alert severity="error">{authError}</Alert>}
-      <Button type="submit"
-              fullWidth
-              variant="contained"
-              color="secondary"
-              disabled={isLoading}
-              className={classes.submit}>
-        {isLoading ? 'Connexion...' : 'Se connecter'}
-        {isLoading && <CircularProgress size={24} className={classes.buttonProgress}/>}
-      </Button>
+      {authError && <Alert severity="error">{authError}</Alert>}
+      <ButtonProgress type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="secondary"
+                      loading={isLoading}
+                      className={classes.submit}>
+        {({ loading }) => loading ? 'Connexion...' : 'Se connecter'}
+      </ButtonProgress>
       <Grid container>
         <Grid item xs>
           <Link href="#" variant="body2">

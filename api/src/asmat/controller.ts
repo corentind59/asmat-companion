@@ -8,6 +8,7 @@ export async function searchAsmats(query: any) {
       message: 'Query parameter \'q\' must be specified.'
     });
   }
+  console.log(query);
   const asmats = await AsmatModel.searchAsmatsByQuery(query);
   return new Ok(asmats);
 }

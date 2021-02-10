@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { AuthContext, AuthContextValue } from '../context';
 import useAuthenticationFlow from '../hooks/useAuthenticationFlow';
 
-export default function Authenticator({ children }: PropsWithChildren<{}>) {
+export default function AuthProvider({ children }: PropsWithChildren<{}>) {
   const authentication = useAuthenticationFlow();
   const { refreshAuthSession, isAuthenticating } = authentication;
 
@@ -13,7 +13,9 @@ export default function Authenticator({ children }: PropsWithChildren<{}>) {
   const contextValue: AuthContextValue = authentication.isAuthenticated ? {
     isAuthenticated: true,
     refreshAuthSession,
-    signOut: authentication.signOut
+    authenticationInfo: {
+      ...authentication.authenticationInfo
+    }
   } : {
     isAuthenticated: false,
     refreshAuthSession

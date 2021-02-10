@@ -34,6 +34,7 @@ export type AsmatOutput = Omit<Asmat, '_search'>;
 export type AsmatSummary = Pick<AsmatOutput, 'firstName'
   | 'lastName'
   | 'address'
+  | 'email'
   | 'fixPhoneNumber'
   | 'cellPhoneNumber'>;
 
@@ -152,7 +153,7 @@ export interface AsmatModel extends mongoose.Model<AsmatDocument> {
 
 AsmatSchema.static('searchAsmatsByQuery', async function (query: string) {
   const result = await this.find({
-    _search: new RegExp(`.*${query}.*`, 'gi')
+    _search: new RegExp(`.*${normalizeSearchField(query)}.*`, 'gi')
   })
     .select('firstName lastName address fixPhoneNumber cellPhoneNumber')
     .exec();

@@ -1,4 +1,3 @@
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
@@ -11,6 +10,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
+import ButtonProgress from '../../common/components/ButtonProgress';
 
 export type NewPasswordFormValues = {
   password: string;
@@ -23,13 +23,6 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
-  },
-  buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12
   },
   passwordRequirementListItem: {
     paddingBottom: 0,
@@ -132,15 +125,14 @@ export default function NewPasswordForm(props: NewPasswordFormProps) {
                  helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
                  disabled={isLoading}/>
       {authError && <Alert severity="error">{authError}</Alert>}
-      <Button type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              disabled={isLoading}
-              className={classes.submit}>
-        {isLoading ? 'Changement en cours...' : 'Changer le mot de passe'}
-        {isLoading && <CircularProgress size={24} className={classes.buttonProgress}/>}
-      </Button>
+      <ButtonProgress type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      loading={isLoading}
+                      className={classes.submit}>
+        {({ loading }) => loading ? 'Changement en cours...' : 'Changer le mot de passe'}
+      </ButtonProgress>
     </form>
   );
 }
