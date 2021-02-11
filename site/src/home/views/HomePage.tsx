@@ -9,6 +9,7 @@ import DashboardPage from '../../dashboard/views/DashboardPage';
 import AccountInfo from '../components/AccountInfo';
 import NavigationMenu from '../components/NavigationMenu';
 import AsmatSearchPage from '../../asmat/views/AsmatSearchPage';
+import AsmatDetailsPage from '../../asmat/views/AsmatDetailsPage';
 
 const drawerWidth = '20vw';
 const drawerMinWidth = '256px';
@@ -74,6 +75,7 @@ export default function HomePage() {
         <Toolbar/>
         <Switch>
           <Route path="/asmats/search" exact component={AsmatSearchPage}/>
+          <Route path="/asmats/:asmatId" exact component={AsmatDetailsPage}/>
           <Route path="/" exact component={DashboardPage}/>
           <Redirect to="/"/>
         </Switch>

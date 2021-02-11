@@ -1,9 +1,10 @@
 component: express
 org: corentindelannoy2
 app: asmat-companion
-name: api
+name: asmat-companion-express
 
 inputs:
+  description: Express ${stage} API for ${app}
   region: eu-west-1
   env:
     EXPRESS_COGNITO_USER_POOL_ID: ${output:asmat-companion:cognito-user-pool.UserPoolId}

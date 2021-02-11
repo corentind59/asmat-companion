@@ -1,9 +1,7 @@
 import TextField from '@material-ui/core/TextField';
-import { useState } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import Alert from '@material-ui/lab/Alert';
-import ButtonProgress from '../../common/components/ButtonProgress';
+import ButtonProgress from '../../../common/components/ButtonProgress';
 import { Search } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
@@ -22,7 +20,6 @@ type AsmatSearchInputProps = {
 };
 
 export default function AsmatSearchInput({ initialQuery, disabled, onSubmit }: AsmatSearchInputProps) {
-  const [searchError, setSearchError] = useState<string | null>(null);
   const initialValues: SearchInputValues = {
     query: initialQuery ?? ''
   };
@@ -60,7 +57,6 @@ export default function AsmatSearchInput({ initialQuery, disabled, onSubmit }: A
           </ButtonProgress>
         </Grid>
       </Grid>
-      {searchError && <Alert severity="error">{searchError}</Alert>}
     </form>
   );
 }

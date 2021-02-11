@@ -1,4 +1,4 @@
-import { AsmatSummary } from '../models/asmat';
+import { AsmatSummary } from '../../models/asmat';
 import {
   Grid,
   Paper,
@@ -11,11 +11,12 @@ import {
   TableRow,
   Typography
 } from '@material-ui/core';
-import { LazyDataReader } from '../../api/types';
+import { LazyDataReader } from '../../../api/types';
 import { memo } from 'react';
-import { formatAddress } from '../services/behaviors';
-import NotProvided from '../../common/components/NotProvided';
+import { formatAddress } from '../../services/behaviors';
+import NotProvided from '../../../common/components/NotProvided';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles({
   container: {
@@ -53,8 +54,12 @@ function AsmatsList({ asmatsSummaryReader }: AsmatsListProps) {
               <TableBody>
                 {asmats.map(asmat => (
                   <TableRow key={asmat._id} hover>
-                    <TableCell>{asmat.lastName}</TableCell>
-                    <TableCell>{asmat.firstName}</TableCell>
+                    <TableCell>
+                      <Link to={`/asmats/${asmat._id}`}>{asmat.lastName}</Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link to={`/asmats/${asmat._id}`}>{asmat.firstName}</Link>
+                    </TableCell>
                     <TableCell>{formatAddress(asmat.address)}</TableCell>
                     <TableCell>{asmat.email || <NotProvided feminize/>}</TableCell>
                     <TableCell>
