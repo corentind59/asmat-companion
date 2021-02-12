@@ -8,7 +8,6 @@ export async function searchAsmats(query: any) {
       message: 'Query parameter \'q\' must be specified.'
     });
   }
-  console.log(query);
   const asmats = await AsmatModel.searchAsmatsByQuery(query);
   return new Ok(asmats);
 }
@@ -27,4 +26,19 @@ export async function createAsmat(body: any) {
   const asmat = await AsmatModel.create(body);
   await asmat.save();
   return new Created(asmat.toJSON());
+}
+
+export async function updateAsmatById(id: string, body: any) {
+  const originalAsmat = await AsmatModel.findById(id);
+  if (!originalAsmat) {
+    throw new NotFound({
+      code: 'asmat-not-found'
+    });
+  }
+  originalAsmat.set({
+    ...body,
+    _id: id
+  });
+  const updatedAsmat = await originalAsmat.save();
+  return new Ok(updatedAsmat.toJSON());
 }

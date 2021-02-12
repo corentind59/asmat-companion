@@ -2,10 +2,10 @@ import { FC } from 'react';
 import { Grid, MenuItem, Theme, useMediaQuery } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import { ClockOutline } from 'mdi-material-ui';
-import { AsmatDetailsValues } from './AsmatDetails';
 import { useFormik } from 'formik';
 import AsmatCard from '../ui/AsmatCard';
 import { makeStyles } from '@material-ui/core/styles';
+import { AsmatDetailsValues } from '../../models/asmat-form';
 
 const useStyles = makeStyles(theme => ({
   formGroup: {

@@ -17,6 +17,5 @@ export type AsmatSummary = Pick<Asmat, '_id'
   | 'firstName'
   | 'lastName'
   | 'address'
-  | 'email'
   | 'fixPhoneNumber'
   | 'cellPhoneNumber'>;

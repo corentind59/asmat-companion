@@ -4,9 +4,9 @@ import { Home, MailOutline, Phone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { At, Cellphone } from 'mdi-material-ui';
-import { AsmatDetailsValues } from './AsmatDetails';
 import { useFormik } from 'formik';
 import AsmatCard from '../ui/AsmatCard';
+import { AsmatDetailsValues } from '../../models/asmat-form';
 
 const useStyles = makeStyles(theme => ({
   formGroup: {

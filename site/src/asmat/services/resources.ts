@@ -8,3 +8,13 @@ export function searchAsmats(query: string) {
 export function getAsmatById(id: string) {
   return request<Asmat>(`/asmats/${id}`);
 }
+
+export function updateAsmatById(id: string, asmat: Asmat) {
+  return request<Asmat>(`/asmats/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(asmat),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}

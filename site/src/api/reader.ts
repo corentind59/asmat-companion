@@ -5,24 +5,27 @@ export function initDataReader<R, P extends any[] = []>(apiFunction: ApiFunction
   let data: R;
   let status: FetchStatus = 'init';
   let error: Error;
+  let promise: Promise<void> | undefined;
 
-  const fetchingData = apiFunction(...parameters)
-    .then(fetchedData => {
-      data = fetchedData;
-      status = 'done';
-    })
-    .catch((e: unknown) => {
-      if (!(e instanceof Error)) {
-        throw e;
-      }
-      error = e;
-      status = 'error';
-    });
+  if (!promise) {
+    promise = apiFunction(...parameters)!
+      .then(fetchedData => {
+        data = fetchedData;
+        status = 'done';
+      })
+      .catch((e: unknown) => {
+        if (!(e instanceof Error)) {
+          throw e;
+        }
+        error = e;
+        status = 'error';
+      });
+  }
 
   return {
     read() {
       if (status === 'init') {
-        throw fetchingData;
+        throw promise;
       } else if (status === 'error') {
         throw error;
       }

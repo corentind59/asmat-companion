@@ -45,7 +45,6 @@ function AsmatsList({ asmatsSummaryReader }: AsmatsListProps) {
               <TableCell>Nom</TableCell>
               <TableCell>Prénom</TableCell>
               <TableCell>Adresse</TableCell>
-              <TableCell>Adresse e-mail</TableCell>
               <TableCell>N° de téléphone</TableCell>
             </TableRow>
           </TableHead>
@@ -61,7 +60,6 @@ function AsmatsList({ asmatsSummaryReader }: AsmatsListProps) {
                       <Link to={`/asmats/${asmat._id}`}>{asmat.firstName}</Link>
                     </TableCell>
                     <TableCell>{formatAddress(asmat.address)}</TableCell>
-                    <TableCell>{asmat.email || <NotProvided feminize/>}</TableCell>
                     <TableCell>
                       {!asmat.fixPhoneNumber && !asmat.cellPhoneNumber ?
                         <NotProvided/> :

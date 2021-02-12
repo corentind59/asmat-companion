@@ -8,21 +8,7 @@ import { TEL_VALIDATOR } from '../../../common/components/validators';
 import { useFormik } from 'formik';
 import AsmatAvailabilityCard from './AsmatAvailabilityCard';
 import { Save } from '@material-ui/icons';
-
-export type AsmatDetailsValues = {
-  addressStreet: string;
-  addressComplement?: string;
-  addressZipCode: string;
-  addressCity: string;
-  addressZone?: string;
-  email?: string;
-  cellPhoneNumber?: string;
-  fixPhoneNumber?: string;
-  receptions?: number;
-  availabilityCommunicated: boolean;
-  availabilityBaby?: number;
-  availabilityScholar?: number;
-};
+import { AsmatDetailsValues } from '../../models/asmat-form';
 
 const asmatDetailsSchema: yup.SchemaOf<AsmatDetailsValues> = yup.object().shape({
   addressStreet: yup.string().required('L\'adresse est requise.'),
@@ -33,17 +19,18 @@ const asmatDetailsSchema: yup.SchemaOf<AsmatDetailsValues> = yup.object().shape(
   email: yup.string().optional().email('Le format de l\'adresse mail est invalide.'),
   cellPhoneNumber: yup.string().optional().matches(TEL_VALIDATOR, 'Le format du numéro est invalide.'),
   fixPhoneNumber: yup.string().optional().matches(TEL_VALIDATOR, 'Le format du numéro est invalide.'),
-  receptions: yup.number().optional().positive('Le nombre d\'accueils doit être positif.'),
+  receptions: yup.number().optional().min(0, 'Le nombre d\'accueils doit être positif.'),
   availabilityCommunicated: yup.boolean().required(),
-  availabilityBaby: yup.number().optional().positive('La disponibilité doit être positive.'),
-  availabilityScholar: yup.number().optional().positive('La disponibilité doit être positive.')
+  availabilityBaby: yup.number().optional().min(0, 'La disponibilité doit être positive.'),
+  availabilityScholar: yup.number().optional().min(0, 'La disponibilité doit être positive.')
 });
 
 type Props = {
-  asmatReader: DataReader<Asmat>
+  asmatReader: DataReader<Asmat>,
+  onUpdate: (updatedAsmat: Asmat) => void
 };
 
-const AsmatDetails: FC<Props> = ({ asmatReader }) => {
+const AsmatDetails: FC<Props> = ({ asmatReader, onUpdate }) => {
   const asmat = asmatReader.read();
   const [readOnly, setReadOnly] = useState(true);
   const initialValues: AsmatDetailsValues = {
@@ -63,7 +50,24 @@ const AsmatDetails: FC<Props> = ({ asmatReader }) => {
   const formik = useFormik({
     initialValues,
     onSubmit(values) {
-
+      onUpdate({
+        ...asmat,
+        email: values.email || undefined,
+        cellPhoneNumber: values.cellPhoneNumber || undefined,
+        fixPhoneNumber: values.fixPhoneNumber || undefined,
+        address: {
+          street: values.addressStreet,
+          complement: values.addressComplement || undefined,
+          zipCode: values.addressZipCode,
+          city: values.addressCity,
+          zone: values.addressZone || undefined
+        },
+        receptions: values.receptions === 0 ? 0 : values.receptions || undefined,
+        availability: !values.availabilityCommunicated ? undefined : {
+          baby: values.availabilityBaby!,
+          scholar: values.availabilityScholar!
+        }
+      });
     },
     validationSchema: asmatDetailsSchema
   });
@@ -76,33 +80,33 @@ const AsmatDetails: FC<Props> = ({ asmatReader }) => {
   };
 
   return (
-    <Grid container direction="column" alignItems="stretch" spacing={3}>
-      <Grid item container justify="space-between" alignItems="center" wrap="nowrap">
-        <Grid item>
-          <Typography component="h2" variant="h4">
-            {asmat.lastName} {asmat.firstName}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Grid container alignItems="center" spacing={1}>
-            <Fade in={!readOnly}>
-              <Button type="submit"
-                      variant="contained"
-                      color="secondary"
-                      startIcon={<Save/>}>
-                Sauvegarder
-              </Button>
-            </Fade>
-            <FormControlLabel label="Mode édition : "
-                              labelPlacement="start"
-                              control={
-                                <Switch checked={!readOnly}
-                                        onChange={handleReadOnlySwitchToggled}/>
-                              }/>
+    <form onSubmit={formik.handleSubmit} noValidate>
+      <Grid container direction="column" alignItems="stretch" spacing={3}>
+        <Grid item container justify="space-between" alignItems="center" wrap="nowrap">
+          <Grid item>
+            <Typography component="h2" variant="h4">
+              {asmat.lastName} {asmat.firstName}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Grid container alignItems="center" spacing={1}>
+              <Fade in={!readOnly}>
+                <Button type="submit"
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<Save/>}>
+                  Sauvegarder
+                </Button>
+              </Fade>
+              <FormControlLabel label="Mode édition : "
+                                labelPlacement="start"
+                                control={
+                                  <Switch checked={!readOnly}
+                                          onChange={handleReadOnlySwitchToggled}/>
+                                }/>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-      <form onSubmit={formik.handleSubmit} noValidate>
         <Grid container alignItems="stretch" wrap="wrap" spacing={2}>
           <Grid item sm={12} lg={7}>
             <AsmatContactCard values={formik.values}
@@ -115,8 +119,8 @@ const AsmatDetails: FC<Props> = ({ asmatReader }) => {
                                    readOnly={readOnly}/>
           </Grid>
         </Grid>
-      </form>
-    </Grid>
+      </Grid>
+    </form>
   );
 };
 

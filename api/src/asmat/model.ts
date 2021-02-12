@@ -34,7 +34,6 @@ export type AsmatOutput = Omit<Asmat, '_search'>;
 export type AsmatSummary = Pick<AsmatOutput, 'firstName'
   | 'lastName'
   | 'address'
-  | 'email'
   | 'fixPhoneNumber'
   | 'cellPhoneNumber'>;
 
@@ -106,8 +105,7 @@ const AsmatSchema = new Schema<AsmatDocument, AsmatModel>({
   },
   receptions: {
     type: SchemaTypes.Number,
-    min: 0,
-    default: 0
+    min: 0
   },
   availability: AvailabilitySchema,
   _search: {
