@@ -1,14 +1,15 @@
 import { FC, useState } from 'react';
 import * as yup from 'yup';
-import { DataReader } from '../../../api/types';
 import { Asmat } from '../../models/asmat';
-import { Button, Fade, FormControlLabel, Grid, Switch, Typography } from '@material-ui/core';
+import { FormControlLabel, Grid, Switch, Typography } from '@material-ui/core';
 import AsmatContactCard from './AsmatContactCard';
-import { TEL_VALIDATOR } from '../../../common/components/validators';
+import { TEL_VALIDATOR } from '../../../common/validators';
 import { useFormik } from 'formik';
 import AsmatAvailabilityCard from './AsmatAvailabilityCard';
 import { Save } from '@material-ui/icons';
 import { AsmatDetailsValues } from '../../models/asmat-form';
+import ButtonProgress from '../../../common/components/ButtonProgress';
+import { fromAsmatDetailsValues, toAsmatDetailsValues } from '../../services/behaviors';
 
 const asmatDetailsSchema: yup.SchemaOf<AsmatDetailsValues> = yup.object().shape({
   addressStreet: yup.string().required('L\'adresse est requise.'),
@@ -26,48 +27,21 @@ const asmatDetailsSchema: yup.SchemaOf<AsmatDetailsValues> = yup.object().shape(
 });
 
 type Props = {
-  asmatReader: DataReader<Asmat>,
-  onUpdate: (updatedAsmat: Asmat) => void
+  asmat: Asmat,
+  onUpdate: (updatedAsmat: Asmat) => unknown
 };
 
-const AsmatDetails: FC<Props> = ({ asmatReader, onUpdate }) => {
-  const asmat = asmatReader.read();
+const AsmatDetails: FC<Props> = ({ asmat, onUpdate }) => {
   const [readOnly, setReadOnly] = useState(true);
-  const initialValues: AsmatDetailsValues = {
-    addressStreet: asmat.address.street,
-    addressComplement: asmat.address.complement ?? '',
-    addressZipCode: asmat.address.zipCode,
-    addressCity: asmat.address.city,
-    addressZone: asmat.address.zone ?? '',
-    email: asmat.email ?? '',
-    cellPhoneNumber: asmat.cellPhoneNumber ?? '',
-    fixPhoneNumber: asmat.fixPhoneNumber ?? '',
-    receptions: asmat.receptions ?? 0,
-    availabilityCommunicated: !!asmat.availability,
-    availabilityBaby: asmat.availability?.baby,
-    availabilityScholar: asmat.availability?.scholar
-  };
+  const initialValues: AsmatDetailsValues = toAsmatDetailsValues(asmat);
   const formik = useFormik({
     initialValues,
-    onSubmit(values) {
-      onUpdate({
+    async onSubmit(values) {
+      await onUpdate({
         ...asmat,
-        email: values.email || undefined,
-        cellPhoneNumber: values.cellPhoneNumber || undefined,
-        fixPhoneNumber: values.fixPhoneNumber || undefined,
-        address: {
-          street: values.addressStreet,
-          complement: values.addressComplement || undefined,
-          zipCode: values.addressZipCode,
-          city: values.addressCity,
-          zone: values.addressZone || undefined
-        },
-        receptions: values.receptions === 0 ? 0 : values.receptions || undefined,
-        availability: !values.availabilityCommunicated ? undefined : {
-          baby: values.availabilityBaby!,
-          scholar: values.availabilityScholar!
-        }
+        ...fromAsmatDetailsValues(values)
       });
+      setReadOnly(true);
     },
     validationSchema: asmatDetailsSchema
   });
@@ -90,14 +64,14 @@ const AsmatDetails: FC<Props> = ({ asmatReader, onUpdate }) => {
           </Grid>
           <Grid item>
             <Grid container alignItems="center" spacing={1}>
-              <Fade in={!readOnly}>
-                <Button type="submit"
-                        variant="contained"
-                        color="secondary"
-                        startIcon={<Save/>}>
-                  Sauvegarder
-                </Button>
-              </Fade>
+              <ButtonProgress type="submit"
+                              disabled={readOnly}
+                              loading={formik.isSubmitting}
+                              variant="contained"
+                              color="secondary"
+                              startIcon={<Save/>}>
+                {({ loading }) => loading ? 'Sauvegarde...' : 'Sauvegarder'}
+              </ButtonProgress>
               <FormControlLabel label="Mode édition : "
                                 labelPlacement="start"
                                 control={
@@ -111,12 +85,14 @@ const AsmatDetails: FC<Props> = ({ asmatReader, onUpdate }) => {
           <Grid item sm={12} lg={7}>
             <AsmatContactCard values={formik.values}
                               onChange={formik.handleChange}
-                              readOnly={readOnly}/>
+                              readOnly={readOnly}
+                              disabled={formik.isSubmitting}/>
           </Grid>
           <Grid item sm={12} lg={5}>
             <AsmatAvailabilityCard values={formik.values}
                                    onChange={formik.handleChange}
-                                   readOnly={readOnly}/>
+                                   readOnly={readOnly}
+                                   disabled={formik.isSubmitting}/>
           </Grid>
         </Grid>
       </Grid>

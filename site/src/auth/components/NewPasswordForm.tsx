@@ -2,7 +2,6 @@ import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import { useState } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

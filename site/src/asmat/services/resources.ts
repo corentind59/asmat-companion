@@ -9,10 +9,10 @@ export function getAsmatById(id: string) {
   return request<Asmat>(`/asmats/${id}`);
 }
 
-export function updateAsmatById(id: string, asmat: Asmat) {
-  return request<Asmat>(`/asmats/${id}`, {
+export function updateAsmatById(params: { id: string, asmat: Asmat }) {
+  return request<Asmat>(`/asmats/${params.id}`, {
     method: 'PUT',
-    body: JSON.stringify(asmat),
+    body: JSON.stringify(params.asmat),
     headers: {
       'Content-Type': 'application/json'
     }

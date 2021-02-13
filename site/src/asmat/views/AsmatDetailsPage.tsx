@@ -1,44 +1,46 @@
 import { Link, useParams } from 'react-router-dom';
-import useAsyncResource from '../../api/hooks/useAsyncResource';
-import { getAsmatById, updateAsmatById } from '../services/resources';
-import { Suspense, unstable_useTransition as useTransition, useCallback, useState } from 'react';
 import AsmatDetails from '../components/business/AsmatDetails';
-import { AsmatDetailsSkeleton } from '../components/ui/AsmatDetailsSkeleton';
-import ErrorBoundary from '../../common/components/ErrorBoundary';
 import { Alert } from '@material-ui/lab';
 import { Box, Button } from '@material-ui/core';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { getAsmatById, updateAsmatById } from '../services/resources';
+import { AsmatDetailsSkeleton } from '../components/ui/AsmatDetailsSkeleton';
 import { Asmat } from '../models/asmat';
-import { ApiFunction } from '../../api/types';
+import { toastError, toastSuccess } from '../../common/toast';
 
 export default function AsmatDetailsPage() {
   const { asmatId } = useParams<{ asmatId: string }>();
-  const [asmatReader] = useAsyncResource(getAsmatById, asmatId);
-  // const [startUpdating, isUpdating] = useTransition();
-
-  const handleAsmatUpdate = (asmatValues: Asmat) => {}
-  //   void startUpdating(() => {
-  //   setAsmatProvider((id: string) => updateAsmatById(id, asmatValues));
-  // });
+  const queryClient = useQueryClient();
+  const { isLoading, isError: isQueryError, data } = useQuery(['asmat', asmatId], () => getAsmatById(asmatId));
+  const { mutate } = useMutation(['updateAsmat', asmatId], updateAsmatById, {
+    onSuccess(updatedAsmat) {
+      queryClient.setQueryData(['asmat', asmatId], updatedAsmat);
+      toastSuccess('L’assistante maternelle a été mise à jour.');
+    },
+    onError(error) {
+      console.error(error);
+      toastError('La modification de l\'assistante maternelle a échouée. Veuillez réessayer plus tard.');
+    }
+  });
+  const handleUpdateAsmat = (asmat: Asmat) => mutate({ id: asmat._id, asmat });
 
   return (
     <section>
-      <ErrorBoundary fallback={
-        <Box maxWidth={600} margin="auto">
-          <Alert severity="error"
-                 action={
-                   <Button component={Link} to="/">
-                     Retour au tableau de bord
-                   </Button>
-                 }>
-            Cette page n'existe pas.
-          </Alert>
-        </Box>
-      }>
-        <Suspense fallback={<AsmatDetailsSkeleton/>}>
-          <AsmatDetails asmatReader={asmatReader}
-                        onUpdate={handleAsmatUpdate}/>
-        </Suspense>
-      </ErrorBoundary>
+      {isLoading ?
+        <AsmatDetailsSkeleton/> :
+        (isQueryError ?
+            <Box maxWidth={600} margin="auto">
+              <Alert severity="error"
+                     action={
+                       <Button component={Link} to="/">
+                         Retour au tableau de bord
+                       </Button>
+                     }>
+                Cette page n'existe pas.
+              </Alert>
+            </Box> :
+            <AsmatDetails asmat={data!} onUpdate={handleUpdateAsmat}/>
+        )}
     </section>
   );
 }

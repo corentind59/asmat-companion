@@ -7,19 +7,32 @@ import AuthProvider from '../auth/components/AuthProvider';
 import UnprotectedRoute from '../auth/components/UnprotectedRoute';
 import { MuiThemeProvider } from '@material-ui/core';
 import theme from './theme';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import 'react-toastify/dist/ReactToastify.min.css';
+import MuiToastContainer from '../common/toast/MuiToastContainer';
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false
+    }
+  }
+});
 
 function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline/>
+      <MuiToastContainer />
       <AuthProvider>
-        <BrowserRouter>
-          <Switch>
-            <UnprotectedRoute path="/login" exact component={LoginPage}/>
-            <ProtectedRoute path="/" component={HomePage}/>
-          </Switch>
-        </BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <Switch>
+              <UnprotectedRoute path="/login" exact component={LoginPage}/>
+              <ProtectedRoute path="/" component={HomePage}/>
+            </Switch>
+          </BrowserRouter>
+        </QueryClientProvider>
       </AuthProvider>
     </MuiThemeProvider>
   );

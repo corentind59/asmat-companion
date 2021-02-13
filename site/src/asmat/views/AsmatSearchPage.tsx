@@ -1,14 +1,12 @@
 import { Box, Grid, LinearProgress, Typography } from '@material-ui/core';
 import AsmatSearchInput from '../components/ui/AsmatSearchInput';
 import { makeStyles } from '@material-ui/core/styles';
-import { Suspense, unstable_useTransition as useTransition, useEffect } from 'react';
-import AsmatsList from '../components/business/AsmatsList';
-import { searchAsmats } from '../services/resources';
-import useLazyAsyncResource from '../../api/hooks/useLazyAsyncResource';
 import { useHistory } from 'react-router-dom';
 import useQueryParams from '../../common/hooks/useQueryParams';
-import Alert from '@material-ui/lab/Alert';
-import ErrorBoundary from '../../common/components/ErrorBoundary';
+import { useQuery } from 'react-query';
+import { searchAsmats } from '../services/resources';
+import { Alert } from '@material-ui/lab';
+import AsmatsList from '../components/business/AsmatsList';
 
 const useStyles = makeStyles(theme => ({
   searchInput: {
@@ -20,16 +18,12 @@ export default function AsmatSearchPage() {
   const classes = useStyles();
   const history = useHistory();
   const queryParams = useQueryParams();
-  const query = queryParams.get('q');
-  const [asmatsSummaryReader, updateAsmatsSummaryReader] = useLazyAsyncResource(searchAsmats);
-  const [startSearching, isSearching] = useTransition();
-  useEffect(() => {
-    if (query) {
-      startSearching(() => {
-        updateAsmatsSummaryReader(query);
-      });
-    }
-  }, [query]);
+  const searchQuery = queryParams.get('q');
+  const {
+    isLoading,
+    isError,
+    data
+  } = useQuery(['searchAsmats', searchQuery], () => searchQuery ? searchAsmats(searchQuery) : []);
   const handleSearchAsmats = (query: string) => history.push({ search: `q=${encodeURIComponent(query)}` });
 
   return (
@@ -39,20 +33,20 @@ export default function AsmatSearchPage() {
       </Typography>
       <Grid container justify="center" className={classes.searchInput}>
         <Grid item xs={8}>
-          <AsmatSearchInput initialQuery={query}
-                            disabled={isSearching}
+          <AsmatSearchInput initialQuery={searchQuery}
+                            disabled={isLoading}
                             onSubmit={handleSearchAsmats}/>
         </Grid>
       </Grid>
       <Box paddingTop={2}>
-        {isSearching && <LinearProgress color="secondary"/>}
-        <ErrorBoundary fallback={
-          <Alert severity="error">Une erreur inattendue est survenue. Réessayez plus tard.</Alert>
-        }>
-          <Suspense fallback={null}>
-            <AsmatsList asmatsSummaryReader={asmatsSummaryReader}/>
-          </Suspense>
-        </ErrorBoundary>
+        {isLoading ?
+          <LinearProgress color="secondary"/> :
+          isError ?
+            <Alert severity="error">Une erreur inattendue est survenue. Réessayez plus tard.</Alert> :
+            searchQuery && (
+              <AsmatsList asmats={data!}/>
+            )
+        }
       </Box>
     </section>
   );

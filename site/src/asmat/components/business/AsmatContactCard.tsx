@@ -24,10 +24,11 @@ type Props = {
     | 'cellPhoneNumber'
     | 'fixPhoneNumber'>,
   onChange: (ReturnType<typeof useFormik>)['handleChange'],
-  readOnly: boolean
+  readOnly: boolean,
+  disabled: boolean
 };
 
-const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly }) => {
+const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) => {
   const classes = useStyles();
   return (
     <AsmatCard title="Contact" icon={<MailOutline/>}>
@@ -42,6 +43,7 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      name="addressStreet"
                      value={values.addressStreet}
                      onChange={onChange}
+                     disabled={disabled}
                      InputProps={{
                        readOnly,
                        startAdornment: (
@@ -59,6 +61,7 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      name="addressComplement"
                      value={values.addressComplement}
                      onChange={onChange}
+                     disabled={disabled}
                      InputProps={{ readOnly }}/>
         </Grid>
         <Grid item xs={6} sm={4} md={3}>
@@ -69,6 +72,7 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      name="addressZipCode"
                      value={values.addressZipCode}
                      onChange={onChange}
+                     disabled={disabled}
                      InputProps={{ readOnly }}/>
         </Grid>
         <Grid item xs={12} sm={6} md={5}>
@@ -79,6 +83,7 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      name="addressCity"
                      value={values.addressCity}
                      onChange={onChange}
+                     disabled={disabled}
                      InputProps={{ readOnly }}/>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
@@ -89,6 +94,7 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      name="addressZone"
                      value={values.addressZone}
                      onChange={onChange}
+                     disabled={disabled}
                      InputProps={{ readOnly }}/>
         </Grid>
       </Grid>
@@ -100,9 +106,10 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      id="email"
                      label="Adresse mail"
                      name="email"
+                     type="mail"
                      value={values.email}
                      onChange={onChange}
-                     type="mail"
+                     disabled={disabled}
                      InputProps={{
                        readOnly,
                        startAdornment: (
@@ -119,9 +126,10 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      id="fixPhoneNumber"
                      label="Téléphone fixe"
                      name="fixPhoneNumber"
+                     type="tel"
                      value={values.fixPhoneNumber}
                      onChange={onChange}
-                     type="tel"
+                     disabled={disabled}
                      InputProps={{
                        readOnly,
                        startAdornment: (
@@ -135,9 +143,10 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      id="cellPhoneNumber"
                      label="Téléphone portable"
                      name="cellPhoneNumber"
+                     type="tel"
                      value={values.cellPhoneNumber}
                      onChange={onChange}
-                     type="tel"
+                     disabled={disabled}
                      InputProps={{
                        readOnly,
                        startAdornment: (

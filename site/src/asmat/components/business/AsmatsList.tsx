@@ -11,7 +11,6 @@ import {
   TableRow,
   Typography
 } from '@material-ui/core';
-import { LazyDataReader } from '../../../api/types';
 import { memo } from 'react';
 import { formatAddress } from '../../services/behaviors';
 import NotProvided from '../../../common/components/NotProvided';
@@ -25,16 +24,11 @@ const useStyles = makeStyles({
 });
 
 type AsmatsListProps = {
-  asmatsSummaryReader: LazyDataReader<AsmatSummary[]>
+  asmats: AsmatSummary[],
 };
 
-function AsmatsList({ asmatsSummaryReader }: AsmatsListProps) {
-  const asmats = asmatsSummaryReader.read();
+function AsmatsList({ asmats }: AsmatsListProps) {
   const classes = useStyles();
-
-  if (!asmats) {
-    return null;
-  }
 
   return (
     <Paper>

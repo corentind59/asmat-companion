@@ -19,7 +19,8 @@ type Props = {
     | 'availabilityBaby'
     | 'availabilityScholar'>,
   onChange: (ReturnType<typeof useFormik>)['handleChange'],
-  readOnly: boolean
+  readOnly: boolean,
+  disabled: boolean
 };
 
 const availabilityCommunicatedOptions = [
@@ -33,7 +34,7 @@ const availabilityCommunicatedOptions = [
   }
 ];
 
-const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly }) => {
+const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly, disabled }) => {
   const classes = useStyles();
   const lgOrUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
@@ -48,6 +49,7 @@ const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      name="receptions"
                      value={values.receptions}
                      onChange={onChange}
+                     disabled={disabled}
                      InputProps={{ readOnly }}
                      type="number"/>
         </Grid>
@@ -62,6 +64,7 @@ const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly }) => {
                      name="availabilityCommunicated"
                      value={+values.availabilityCommunicated}
                      onChange={onChange}
+                     disabled={disabled}
                      InputProps={{ readOnly }}>
             {availabilityCommunicatedOptions.map(option => (
               <MenuItem key={+option.value} value={+option.value}>
@@ -80,7 +83,7 @@ const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly }) => {
                        value={values.availabilityBaby}
                        onChange={onChange}
                        InputProps={{ readOnly }}
-                       disabled={!values.availabilityCommunicated}
+                       disabled={!values.availabilityCommunicated || disabled}
                        type="number"/>
           </Grid>
           <Grid item xs={6} sm={4} lg={12}>
@@ -92,7 +95,7 @@ const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly }) => {
                        value={values.availabilityScholar}
                        onChange={onChange}
                        InputProps={{ readOnly }}
-                       disabled={!values.availabilityCommunicated}
+                       disabled={!values.availabilityCommunicated || disabled}
                        type="number"/>
           </Grid>
         </Grid>
