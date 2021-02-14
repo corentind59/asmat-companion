@@ -1,4 +1,4 @@
-export type AdhesionStatus = 'normal' | 'remind';
+export type AdhesionStatus = 'normal' | 'remind' | 'expired';
 
 export interface Adhesion {
   joiningDate: string;

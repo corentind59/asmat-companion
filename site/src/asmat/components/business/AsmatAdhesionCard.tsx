@@ -3,7 +3,7 @@ import AsmatCard from '../ui/AsmatCard';
 import { Adhesion } from '../../models/adhesion';
 import { ShieldAlertOutline, ShieldCheck, ShieldEditOutline, ShieldRemove } from 'mdi-material-ui';
 import { makeStyles } from '@material-ui/core/styles';
-import { green, orange } from '@material-ui/core/colors';
+import { green, orange, red } from '@material-ui/core/colors';
 import {
   Box,
   Button,
@@ -17,7 +17,6 @@ import {
 import { DateTime } from 'luxon';
 import { Cancel, Check } from '@material-ui/icons';
 import ButtonProgress from '../../../common/components/ButtonProgress';
-import { toastSuccess } from '../../../common/toast';
 
 const useStyles = makeStyles(theme => ({
   adherent: {
@@ -25,6 +24,9 @@ const useStyles = makeStyles(theme => ({
   },
   remind: {
     color: orange[500]
+  },
+  expired: {
+    color: red[500]
   }
 }));
 
@@ -37,12 +39,12 @@ const AsmatAdhesionCard: FC<Props> = ({ adhesion, onAdhere }) => {
   const classes = useStyles();
   const [showAdhereDialog, setShowAdhereDialog] = useState(false);
   const [adhering, setAdhering] = useState(false);
-  const title = adhesion ? 'Adhérent(e)' : 'Non adhérent(e)';
-  const icon = adhesion ?
-    (adhesion.status === 'normal' ?
-      <ShieldCheck className={classes.adherent}/> :
-      <ShieldAlertOutline className={classes.remind}/>) :
-    <ShieldRemove/>;
+  const title = !adhesion ? 'Non adhérent(e)' :
+    (adhesion.status === 'expired' ? 'Adhésion expirée' : 'Adhérent(e)');
+  const icon = !adhesion ? <ShieldRemove/> :
+    (adhesion.status === 'normal' ? <ShieldCheck className={classes.adherent}/> :
+      (adhesion.status === 'remind' ? <ShieldAlertOutline className={classes.remind}/> :
+        <ShieldAlertOutline className={classes.expired}/>));
   const handleAdhereClick = () => void setShowAdhereDialog(true);
   const handleAdhereConfirm = async () => {
     setAdhering(true);
@@ -57,10 +59,12 @@ const AsmatAdhesionCard: FC<Props> = ({ adhesion, onAdhere }) => {
         const adhesionDate = DateTime.fromISO(adhesion.joiningDate).setLocale('fr');
         return (
           <Typography component="p" variant="body1">
-            <Box component="span" display="flex" justifyContent="space-between" marginBottom={1}>
-              <strong>Date d'adhésion :</strong>
-              <span>{adhesionDate.toLocaleString(DateTime.DATE_FULL)}</span>
-            </Box>
+            {adhesion.status !== 'expired' && (
+              <Box component="span" display="flex" justifyContent="space-between" marginBottom={1}>
+                <strong>Date d'adhésion :</strong>
+                <span>{adhesionDate.toLocaleString(DateTime.DATE_FULL)}</span>
+              </Box>
+            )}
             <Box component="span" display="flex" justifyContent="space-between">
               <strong>Date de fin d'adhésion : </strong>
               <span>{adhesionDate.plus({ year: 1 }).toLocaleString(DateTime.DATE_FULL)}</span>
@@ -68,7 +72,7 @@ const AsmatAdhesionCard: FC<Props> = ({ adhesion, onAdhere }) => {
           </Typography>
         );
       })()}
-      {(!adhesion || adhesion.status === 'remind') && (
+      {(!adhesion || adhesion.status !== 'normal') && (
         <Box display="flex" justifyContent="center" marginTop={1}>
           <Button variant="contained"
                   color="primary"
@@ -97,7 +101,8 @@ const AsmatAdhesionCard: FC<Props> = ({ adhesion, onAdhere }) => {
               </strong>.
               </> :
               <>
-                Confirmez-vous l'adhésion ? L'assistante maternelle n'étant pas encore adhérente, l'adhésion prendra fin
+                Confirmez-vous l'adhésion ? L'assistante maternelle n'étant pas (ou plus) adhérente, l'adhésion prendra
+                fin
                 le <strong>
                 {
                   DateTime.local().toUTC()

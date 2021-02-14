@@ -1,4 +1,4 @@
-import AsmatModel from './model';
+import AsmatModel, { AsmatOutput } from './model';
 import { BadRequest, Created, NotFound, Ok } from '@corentind/expressive';
 import { getNewAdhesionDate } from './service';
 
@@ -56,7 +56,7 @@ export async function adhere(id: string) {
     });
   }
   try {
-    const nextAdhesionDate = getNewAdhesionDate(asmat.lastAdhesionDate || null);
+    const nextAdhesionDate = getNewAdhesionDate(asmat.toJSON() as AsmatOutput);
     asmat.set({ lastAdhesionDate: nextAdhesionDate });
     const updatedAsmat = await asmat.save();
     return new Ok(updatedAsmat.toJSON());

@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { Adhesion, Asmat } from './model';
+import { Adhesion, Asmat, AsmatOutput } from './model';
 
 export function toAsmatOutput(ret: Asmat) {
   const adhesion = ((): Adhesion | null => {
@@ -9,14 +9,15 @@ export function toAsmatOutput(ret: Asmat) {
     const adhesionDate = DateTime.fromJSDate(ret.lastAdhesionDate).toUTC().startOf('day');
     const adhesionEndDate = adhesionDate.plus({ year: 1 });
     const today = DateTime.local().toUTC().startOf('day');
-    if (adhesionEndDate <= today) {
-      return null;
-    }
-    const status = today.plus({ month: 1 }) >= adhesionEndDate ? 'remind' : 'normal';
-      return {
-        joiningDate: adhesionDate.toJSDate(),
-        status: status
-      };
+    const status = adhesionEndDate <= today ?
+      'expired' :
+      today.plus({ month: 1 }) >= adhesionEndDate ?
+        'remind' :
+        'normal';
+    return {
+      joiningDate: adhesionDate.toJSDate(),
+      status: status
+    };
   })();
 
   delete ret._search;
@@ -27,19 +28,18 @@ export function toAsmatOutput(ret: Asmat) {
   };
 }
 
-export function getNewAdhesionDate(previousAdhesionDate: Date | null) {
+export function getNewAdhesionDate(asmat: AsmatOutput) {
   const today = DateTime.local().toUTC().startOf('day');
-  if (!previousAdhesionDate) {
+  if (!asmat.adhesion) {
     return today.toJSDate();
   }
-  const endDate = DateTime.fromJSDate(previousAdhesionDate).toUTC().plus({ year: 1 }).startOf('day');
-  if (endDate <= today) {
+  if (asmat.adhesion.status === 'expired') {
     return today.toJSDate();
   }
-  if (today.plus({ month: 1 }) >= endDate) {
-    return endDate.toJSDate();
+  if (asmat.adhesion.status === 'remind') {
+    return DateTime.fromJSDate(asmat.adhesion.joiningDate).toUTC().plus({ year: 1 }).toJSDate();
   }
-  const error = new Error("Cannot re-adhere : adhesion still running.");
+  const error = new Error('Cannot re-adhere : adhesion still running.');
   error.name = 'AdhesionError';
   throw error;
 }

@@ -33,7 +33,7 @@ export interface Asmat {
 
 export interface Adhesion {
   joiningDate: Date;
-  status: 'normal' | 'remind';
+  status: 'normal' | 'remind' | 'expired';
 }
 
 export type AsmatOutput = Omit<Asmat, '_search' | 'lastAdhesionDate'> & {
