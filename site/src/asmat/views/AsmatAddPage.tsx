@@ -1,6 +1,6 @@
 import { Box, Typography } from '@material-ui/core';
 import AsmatAddForm from '../components/business/AsmatAddForm';
-import { AsmatInput } from '../models/asmat';
+import { AsmatCreationInput } from '../models/asmat';
 import { useMutation } from 'react-query';
 import { createAsmat } from '../services/resources';
 import { useHistory } from 'react-router-dom';
@@ -14,9 +14,7 @@ export default function AsmatAddPage() {
       toastSuccess(`${asmat.firstName} ${asmat.lastName} a été enregistré avec succès.`);
     }
   });
-  const handleAddAsmat = (asmat: AsmatInput) => {
-    mutation.mutate(asmat);
-  };
+  const handleAddAsmat = (asmat: AsmatCreationInput) => mutation.mutateAsync(asmat);
 
   return (
     <section>

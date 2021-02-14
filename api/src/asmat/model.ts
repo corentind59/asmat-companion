@@ -1,6 +1,7 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, LeanDocument, Schema, ToObjectOptions } from 'mongoose';
 import { EMAIL_VALIDATOR, TEL_VALIDATOR } from '../utils/validation';
 import { normalizeSearchField } from '../utils/normalize';
+import { toAsmatOutput } from './service';
 
 const SchemaTypes = mongoose.SchemaTypes;
 
@@ -26,10 +27,18 @@ export interface Asmat {
   email: string | null;
   receptions: number | null;
   availability: Availability | null;
+  lastAdhesionDate?: Date | null;
   _search?: string;
 }
 
-export type AsmatOutput = Omit<Asmat, '_search'>;
+export interface Adhesion {
+  joiningDate: Date;
+  status: 'normal' | 'remind';
+}
+
+export type AsmatOutput = Omit<Asmat, '_search' | 'lastAdhesionDate'> & {
+  adhesion: Adhesion | null
+};
 
 export type AsmatSummary = Pick<AsmatOutput, 'firstName'
   | 'lastName'
@@ -125,16 +134,17 @@ const AsmatSchema = new Schema<AsmatDocument, AsmatModel>({
     type: AvailabilitySchema,
     default: null
   },
+  lastAdhesionDate: {
+    type: SchemaTypes.Date,
+    default: null
+  },
   _search: {
     type: SchemaTypes.String,
     index: true
   }
 }, {
   toJSON: {
-    transform: (doc, ret: Asmat) => {
-      delete ret._search;
-      return ret;
-    }
+    transform: (doc, ret: Asmat) => toAsmatOutput(ret)
   }
 });
 

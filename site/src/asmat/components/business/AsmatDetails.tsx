@@ -7,11 +7,12 @@ import { TEL_VALIDATOR } from '../../../common/validators';
 import { useFormik } from 'formik';
 import AsmatAvailabilityCard from './AsmatAvailabilityCard';
 import { Save } from '@material-ui/icons';
-import { AsmatDetailsValues } from '../../models/asmat-form';
+import { AsmatUpdateValues } from '../../models/asmat-form';
 import ButtonProgress from '../../../common/components/ButtonProgress';
-import { fromAsmatDetailsValues, toAsmatDetailsValues } from '../../services/behaviors';
+import { fromAsmatUpdateValues, toAsmatUpdateValues } from '../../services/behaviors';
+import AsmatAdhesionCard from './AsmatAdhesionCard';
 
-const asmatDetailsSchema: yup.SchemaOf<AsmatDetailsValues> = yup.object().shape({
+const asmatDetailsSchema: yup.SchemaOf<AsmatUpdateValues> = yup.object().shape({
   addressStreet: yup.string().required('L\'adresse est requise.'),
   addressComplement: yup.string().ensure(),
   addressZipCode: yup.string().required('Le code postal est requis.'),
@@ -22,12 +23,16 @@ const asmatDetailsSchema: yup.SchemaOf<AsmatDetailsValues> = yup.object().shape(
     .matches(TEL_VALIDATOR, { message: 'Le format du numéro est invalide.', excludeEmptyString: true })
     .test('onePhoneRequired',
       'Un numéro de téléphone doit être fourni.',
-      function() { return this.parent.cellPhoneNumber || this.parent.fixPhoneNumber }),
+      function () {
+        return this.parent.cellPhoneNumber || this.parent.fixPhoneNumber;
+      }),
   fixPhoneNumber: yup.string().ensure().notRequired()
     .matches(TEL_VALIDATOR, { message: 'Le format du numéro est invalide.', excludeEmptyString: true })
     .test('onePhoneRequired',
       'Un numéro de téléphone doit être fourni.',
-      function() { return this.parent.cellPhoneNumber || this.parent.fixPhoneNumber }),
+      function () {
+        return this.parent.cellPhoneNumber || this.parent.fixPhoneNumber;
+      }),
   receptions: yup.number().defined().nullable().default(null).min(0, 'Le nombre d\'accueils doit être positif.'),
   availabilityCommunicated: yup.boolean().required(),
   availabilityBaby: yup.number().defined().nullable().default(null).min(0, 'La disponibilité doit être positive.'),
@@ -36,18 +41,19 @@ const asmatDetailsSchema: yup.SchemaOf<AsmatDetailsValues> = yup.object().shape(
 
 type Props = {
   asmat: Asmat,
-  onUpdate: (updatedAsmat: Asmat) => unknown
+  onUpdate: (updatedAsmat: Asmat) => unknown,
+  onAdhere: () => unknown
 };
 
-const AsmatDetails: FC<Props> = ({ asmat, onUpdate }) => {
+const AsmatDetails: FC<Props> = ({ asmat, onUpdate, onAdhere }) => {
   const [readOnly, setReadOnly] = useState(true);
-  const initialValues: AsmatDetailsValues = toAsmatDetailsValues(asmat);
+  const initialValues: AsmatUpdateValues = toAsmatUpdateValues(asmat);
   const formik = useFormik({
     initialValues,
     async onSubmit(values) {
       await onUpdate({
         ...asmat,
-        ...fromAsmatDetailsValues(values)
+        ...fromAsmatUpdateValues(values)
       });
     },
     validationSchema: asmatDetailsSchema,
@@ -61,7 +67,7 @@ const AsmatDetails: FC<Props> = ({ asmat, onUpdate }) => {
     setReadOnly(true);
   };
   useEffect(() => {
-    formik.resetForm({ values: toAsmatDetailsValues(asmat) });
+    formik.resetForm({ values: toAsmatUpdateValues(asmat) });
   }, [asmat]);
 
   return (
@@ -108,6 +114,10 @@ const AsmatDetails: FC<Props> = ({ asmat, onUpdate }) => {
                                    errors={formik.errors}
                                    readOnly={readOnly}
                                    disabled={formik.isSubmitting}/>
+          </Grid>
+          <Grid item sm={12} lg={4}>
+            <AsmatAdhesionCard adhesion={asmat.adhesion}
+                               onAdhere={onAdhere}/>
           </Grid>
         </Grid>
       </Grid>

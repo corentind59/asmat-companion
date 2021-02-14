@@ -1,4 +1,4 @@
-export interface AsmatCreationValues extends Pick<AsmatDetailsValues, 'addressStreet'
+export interface AsmatCreationValues extends Pick<AsmatUpdateValues, 'addressStreet'
   | 'addressComplement'
   | 'addressZipCode'
   | 'addressCity'
@@ -10,7 +10,7 @@ export interface AsmatCreationValues extends Pick<AsmatDetailsValues, 'addressSt
   lastName: string;
 }
 
-export interface AsmatDetailsValues {
+export interface AsmatUpdateValues {
   addressStreet: string;
   addressComplement: string;
   addressZipCode: string;

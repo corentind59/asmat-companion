@@ -1,5 +1,6 @@
 import AsmatModel from './model';
 import { BadRequest, Created, NotFound, Ok } from '@corentind/expressive';
+import { getNewAdhesionDate } from './service';
 
 export async function searchAsmats(query: any) {
   if (typeof query !== 'string') {
@@ -23,7 +24,10 @@ export async function getById(id: string) {
 }
 
 export async function createAsmat(body: any) {
-  const asmat = await AsmatModel.create(body);
+  const asmat = await AsmatModel.create({
+    ...body,
+    lastAdhesionDate: null
+  });
   await asmat.save();
   return new Created(asmat.toJSON());
 }
@@ -37,8 +41,32 @@ export async function updateAsmatById(id: string, body: any) {
   }
   originalAsmat.set({
     ...body,
-    _id: id
+    _id: id,
+    lastAdhesionDate: originalAsmat.lastAdhesionDate
   });
   const updatedAsmat = await originalAsmat.save();
   return new Ok(updatedAsmat.toJSON());
+}
+
+export async function adhere(id: string) {
+  const asmat = await AsmatModel.findById(id);
+  if (!asmat) {
+    throw new NotFound({
+      code: 'asmat-not-found'
+    });
+  }
+  try {
+    const nextAdhesionDate = getNewAdhesionDate(asmat.lastAdhesionDate || null);
+    asmat.set({ lastAdhesionDate: nextAdhesionDate });
+    const updatedAsmat = await asmat.save();
+    return new Ok(updatedAsmat.toJSON());
+  } catch (e: unknown) {
+    if (e instanceof Error && e.name === 'AdhesionError') {
+      throw new BadRequest({
+        code: 'adhesion-error',
+        message: e.message
+      });
+    }
+    throw e;
+  }
 }

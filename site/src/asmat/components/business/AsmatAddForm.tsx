@@ -6,7 +6,7 @@ import AsmatIdentityCard from './AsmatIdentityCard';
 import { Box, Grid } from '@material-ui/core';
 import ButtonProgress from '../../../common/components/ButtonProgress';
 import { Add } from '@material-ui/icons';
-import { Asmat, AsmatInput } from '../../models/asmat';
+import { Asmat, AsmatCreationInput } from '../../models/asmat';
 import AsmatContactCard from './AsmatContactCard';
 import { TEL_VALIDATOR } from '../../../common/validators';
 import { fromAsmatCreationValues } from '../../services/behaviors';
@@ -37,7 +37,7 @@ const asmatCreationSchema: yup.SchemaOf<AsmatCreationValues> = yup.object().shap
 });
 
 type Props = {
-  onAdd: (asmat: AsmatInput) => unknown
+  onAdd: (asmat: AsmatCreationInput) => unknown
 };
 
 const AsmatAddForm: FC<Props> = ({ onAdd }) => {

@@ -1,12 +1,12 @@
 import { Address } from '../models/address';
-import { Asmat, AsmatInput } from '../models/asmat';
-import { AsmatCreationValues, AsmatDetailsValues } from '../models/asmat-form';
+import { Asmat, AsmatCreationInput, AsmatUpdateInput } from '../models/asmat';
+import { AsmatCreationValues, AsmatUpdateValues } from '../models/asmat-form';
 
 export function formatAddress({ city, complement, street, zipCode, zone }: Address) {
   return `${street}${complement ? `, ${complement}` : ''}, ${zipCode} ${city}${zone ? ` (${zone})` : ''}`;
 }
 
-export function toAsmatDetailsValues(asmat: Asmat): AsmatDetailsValues {
+export function toAsmatUpdateValues(asmat: Asmat): AsmatUpdateValues {
   return {
     addressStreet: asmat.address.street,
     addressComplement: asmat.address.complement ?? '',
@@ -23,7 +23,7 @@ export function toAsmatDetailsValues(asmat: Asmat): AsmatDetailsValues {
   };
 }
 
-export function fromAsmatDetailsValues(values: AsmatDetailsValues): Omit<Asmat, '_id' | 'firstName' | 'lastName'> {
+export function fromAsmatUpdateValues(values: AsmatUpdateValues): AsmatUpdateInput {
   return {
     email: values.email || null,
     cellPhoneNumber: values.cellPhoneNumber || null,
@@ -43,7 +43,7 @@ export function fromAsmatDetailsValues(values: AsmatDetailsValues): Omit<Asmat, 
   };
 }
 
-export function fromAsmatCreationValues(values: AsmatCreationValues): AsmatInput {
+export function fromAsmatCreationValues(values: AsmatCreationValues): AsmatCreationInput {
   return {
     firstName: values.firstName,
     lastName: values.lastName,

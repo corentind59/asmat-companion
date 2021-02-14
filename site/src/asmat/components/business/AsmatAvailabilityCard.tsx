@@ -5,7 +5,7 @@ import { ClockOutline } from 'mdi-material-ui';
 import { FormikErrors, FormikTouched, useFormik } from 'formik';
 import AsmatCard from '../ui/AsmatCard';
 import { makeStyles } from '@material-ui/core/styles';
-import { AsmatDetailsValues } from '../../models/asmat-form';
+import { AsmatUpdateValues } from '../../models/asmat-form';
 import { numberOrBlank } from '../../../common/form-control';
 
 const useStyles = makeStyles(theme => ({
@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-type AsmatAvailabilityValues = Pick<AsmatDetailsValues, 'receptions'
+type AsmatAvailabilityValues = Pick<AsmatUpdateValues, 'receptions'
   | 'availabilityCommunicated'
   | 'availabilityBaby'
   | 'availabilityScholar'>;

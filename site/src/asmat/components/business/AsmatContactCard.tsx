@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import { At, Cellphone } from 'mdi-material-ui';
 import { FormikErrors, FormikTouched, useFormik } from 'formik';
 import AsmatCard from '../ui/AsmatCard';
-import { AsmatDetailsValues } from '../../models/asmat-form';
+import { AsmatUpdateValues } from '../../models/asmat-form';
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-type AsmatContactValues = Pick<AsmatDetailsValues, 'addressStreet'
+type AsmatContactValues = Pick<AsmatUpdateValues, 'addressStreet'
   | 'addressComplement'
   | 'addressZipCode'
   | 'addressCity'
