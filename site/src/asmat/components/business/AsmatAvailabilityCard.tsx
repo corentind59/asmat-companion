@@ -2,10 +2,11 @@ import { FC } from 'react';
 import { Grid, MenuItem, Theme, useMediaQuery } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import { ClockOutline } from 'mdi-material-ui';
-import { useFormik } from 'formik';
+import { FormikErrors, FormikTouched, useFormik } from 'formik';
 import AsmatCard from '../ui/AsmatCard';
 import { makeStyles } from '@material-ui/core/styles';
 import { AsmatDetailsValues } from '../../models/asmat-form';
+import { numberOrBlank } from '../../../common/form-control';
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -13,12 +14,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+type AsmatAvailabilityValues = Pick<AsmatDetailsValues, 'receptions'
+  | 'availabilityCommunicated'
+  | 'availabilityBaby'
+  | 'availabilityScholar'>;
+
 type Props = {
-  values: Pick<AsmatDetailsValues, 'receptions'
-    | 'availabilityCommunicated'
-    | 'availabilityBaby'
-    | 'availabilityScholar'>,
+  values: AsmatAvailabilityValues,
   onChange: (ReturnType<typeof useFormik>)['handleChange'],
+  touched: FormikTouched<AsmatAvailabilityValues>,
+  errors: FormikErrors<AsmatAvailabilityValues>,
   readOnly: boolean,
   disabled: boolean
 };
@@ -34,10 +39,9 @@ const availabilityCommunicatedOptions = [
   }
 ];
 
-const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly, disabled }) => {
+const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, touched, errors, readOnly, disabled }) => {
   const classes = useStyles();
   const lgOrUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
-
   return (
     <AsmatCard title="Disponibilité" icon={<ClockOutline/>}>
       <Grid container alignItems="center" spacing={1} className={classes.formGroup}>
@@ -47,9 +51,11 @@ const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly, disabled
                      id="receptions"
                      label="Nombre d'accueils"
                      name="receptions"
-                     value={values.receptions}
+                     value={numberOrBlank(values.receptions)}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.receptions && errors.receptions}
+                     error={touched.receptions && !!errors.receptions}
                      InputProps={{ readOnly }}
                      type="number"/>
         </Grid>
@@ -65,6 +71,8 @@ const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly, disabled
                      value={+values.availabilityCommunicated}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.availabilityCommunicated && errors.availabilityCommunicated}
+                     error={touched.availabilityCommunicated && !!errors.availabilityCommunicated}
                      InputProps={{ readOnly }}>
             {availabilityCommunicatedOptions.map(option => (
               <MenuItem key={+option.value} value={+option.value}>
@@ -80,10 +88,12 @@ const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly, disabled
                        id="availabilityBaby"
                        label="Bébé(s)"
                        name="availabilityBaby"
-                       value={values.availabilityBaby}
+                       value={numberOrBlank(values.availabilityBaby)}
                        onChange={onChange}
                        InputProps={{ readOnly }}
                        disabled={!values.availabilityCommunicated || disabled}
+                       helperText={touched.availabilityBaby && errors.availabilityBaby}
+                       error={touched.availabilityBaby && !!errors.availabilityBaby}
                        type="number"/>
           </Grid>
           <Grid item xs={6} sm={4} lg={12}>
@@ -92,10 +102,12 @@ const AsmatAvailabilityCard: FC<Props> = ({ values, onChange, readOnly, disabled
                        id="availabilityScholar"
                        label="Périscolaire(s)"
                        name="availabilityScholar"
-                       value={values.availabilityScholar}
+                       value={numberOrBlank(values.availabilityScholar)}
                        onChange={onChange}
                        InputProps={{ readOnly }}
                        disabled={!values.availabilityCommunicated || disabled}
+                       helperText={touched.availabilityScholar && errors.availabilityScholar}
+                       error={touched.availabilityScholar && !!errors.availabilityScholar}
                        type="number"/>
           </Grid>
         </Grid>

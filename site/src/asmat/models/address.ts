@@ -1,7 +1,7 @@
 export interface Address {
   street: string;
-  complement?: string;
+  complement: string | null;
   zipCode: string;
   city: string;
-  zone?: string;
+  zone: string | null;
 }

@@ -57,7 +57,7 @@ function AsmatsList({ asmats }: AsmatsListProps) {
                     <TableCell>
                       {!asmat.fixPhoneNumber && !asmat.cellPhoneNumber ?
                         <NotProvided/> :
-                        <Grid container alignItems="center">
+                        <Grid container direction="column">
                           <Grid item>{asmat.fixPhoneNumber && `Fixe : ${asmat.fixPhoneNumber}`}</Grid>
                           <Grid item>{asmat.cellPhoneNumber && `Portable : ${asmat.cellPhoneNumber}`}</Grid>
                         </Grid>

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { Asmat } from '../../models/asmat';
 import { FormControlLabel, Grid, Switch, Typography } from '@material-ui/core';
@@ -13,17 +13,25 @@ import { fromAsmatDetailsValues, toAsmatDetailsValues } from '../../services/beh
 
 const asmatDetailsSchema: yup.SchemaOf<AsmatDetailsValues> = yup.object().shape({
   addressStreet: yup.string().required('L\'adresse est requise.'),
-  addressComplement: yup.string().optional(),
+  addressComplement: yup.string().ensure(),
   addressZipCode: yup.string().required('Le code postal est requis.'),
   addressCity: yup.string().required('La commune est requise.'),
-  addressZone: yup.string().optional(),
-  email: yup.string().optional().email('Le format de l\'adresse mail est invalide.'),
-  cellPhoneNumber: yup.string().optional().matches(TEL_VALIDATOR, 'Le format du numéro est invalide.'),
-  fixPhoneNumber: yup.string().optional().matches(TEL_VALIDATOR, 'Le format du numéro est invalide.'),
-  receptions: yup.number().optional().min(0, 'Le nombre d\'accueils doit être positif.'),
+  addressZone: yup.string().ensure(),
+  email: yup.string().ensure().email('Le format de l\'adresse mail est invalide.'),
+  cellPhoneNumber: yup.string().ensure().notRequired()
+    .matches(TEL_VALIDATOR, { message: 'Le format du numéro est invalide.', excludeEmptyString: true })
+    .test('onePhoneRequired',
+      'Un numéro de téléphone doit être fourni.',
+      function() { return this.parent.cellPhoneNumber || this.parent.fixPhoneNumber }),
+  fixPhoneNumber: yup.string().ensure().notRequired()
+    .matches(TEL_VALIDATOR, { message: 'Le format du numéro est invalide.', excludeEmptyString: true })
+    .test('onePhoneRequired',
+      'Un numéro de téléphone doit être fourni.',
+      function() { return this.parent.cellPhoneNumber || this.parent.fixPhoneNumber }),
+  receptions: yup.number().defined().nullable().default(null).min(0, 'Le nombre d\'accueils doit être positif.'),
   availabilityCommunicated: yup.boolean().required(),
-  availabilityBaby: yup.number().optional().min(0, 'La disponibilité doit être positive.'),
-  availabilityScholar: yup.number().optional().min(0, 'La disponibilité doit être positive.')
+  availabilityBaby: yup.number().defined().nullable().default(null).min(0, 'La disponibilité doit être positive.'),
+  availabilityScholar: yup.number().defined().nullable().default(null).min(0, 'La disponibilité doit être positive.')
 });
 
 type Props = {
@@ -41,9 +49,9 @@ const AsmatDetails: FC<Props> = ({ asmat, onUpdate }) => {
         ...asmat,
         ...fromAsmatDetailsValues(values)
       });
-      setReadOnly(true);
     },
-    validationSchema: asmatDetailsSchema
+    validationSchema: asmatDetailsSchema,
+    validateOnBlur: true
   });
   const handleReadOnlySwitchToggled = () => {
     if (readOnly) {
@@ -52,6 +60,9 @@ const AsmatDetails: FC<Props> = ({ asmat, onUpdate }) => {
     formik.resetForm();
     setReadOnly(true);
   };
+  useEffect(() => {
+    formik.resetForm({ values: toAsmatDetailsValues(asmat) });
+  }, [asmat]);
 
   return (
     <form onSubmit={formik.handleSubmit} noValidate>
@@ -59,7 +70,7 @@ const AsmatDetails: FC<Props> = ({ asmat, onUpdate }) => {
         <Grid item container justify="space-between" alignItems="center" wrap="nowrap">
           <Grid item>
             <Typography component="h2" variant="h4">
-              {asmat.lastName} {asmat.firstName}
+              {asmat.firstName} {asmat.lastName}
             </Typography>
           </Grid>
           <Grid item>
@@ -85,12 +96,16 @@ const AsmatDetails: FC<Props> = ({ asmat, onUpdate }) => {
           <Grid item sm={12} lg={7}>
             <AsmatContactCard values={formik.values}
                               onChange={formik.handleChange}
+                              touched={formik.touched}
+                              errors={formik.errors}
                               readOnly={readOnly}
                               disabled={formik.isSubmitting}/>
           </Grid>
           <Grid item sm={12} lg={5}>
             <AsmatAvailabilityCard values={formik.values}
                                    onChange={formik.handleChange}
+                                   touched={formik.touched}
+                                   errors={formik.errors}
                                    readOnly={readOnly}
                                    disabled={formik.isSubmitting}/>
           </Grid>

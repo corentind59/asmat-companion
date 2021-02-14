@@ -6,12 +6,14 @@ export interface Asmat {
   firstName: string;
   lastName: string;
   address: Address;
-  cellPhoneNumber?: string;
-  fixPhoneNumber?: string;
-  email?: string;
-  receptions?: number;
-  availability?: Availability;
+  cellPhoneNumber: string | null;
+  fixPhoneNumber: string | null;
+  email: string | null;
+  receptions: number | null;
+  availability: Availability | null;
 }
+
+export type AsmatInput = Omit<Asmat, '_id'>;
 
 export type AsmatSummary = Pick<Asmat, '_id'
   | 'firstName'

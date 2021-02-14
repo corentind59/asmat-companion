@@ -6,10 +6,10 @@ const SchemaTypes = mongoose.SchemaTypes;
 
 export interface Address {
   street: string;
-  complement?: string;
+  complement: string | null;
   zipCode: string;
   city: string;
-  zone?: string;
+  zone: string | null;
 }
 
 export interface Availability {
@@ -21,11 +21,11 @@ export interface Asmat {
   firstName: string;
   lastName: string;
   address: Address;
-  cellPhoneNumber?: string;
-  fixPhoneNumber?: string;
-  email?: string;
-  receptions?: number;
-  availability?: Availability;
+  cellPhoneNumber: string | null;
+  fixPhoneNumber: string | null;
+  email: string | null;
+  receptions: number | null;
+  availability: Availability | null;
   _search?: string;
 }
 
@@ -45,7 +45,10 @@ const AddressSchema = new Schema({
     type: SchemaTypes.String,
     required: true
   },
-  complement: SchemaTypes.String,
+  complement: {
+    type: SchemaTypes.String,
+    default: null
+  },
   zipCode: {
     type: SchemaTypes.String,
     required: true
@@ -55,7 +58,8 @@ const AddressSchema = new Schema({
     required: true
   },
   zone: {
-    type: SchemaTypes.String
+    type: SchemaTypes.String,
+    default: null
   }
 }, {
   _id: false,
@@ -93,21 +97,34 @@ const AsmatSchema = new Schema<AsmatDocument, AsmatModel>({
   },
   cellPhoneNumber: {
     type: SchemaTypes.String,
-    validate: TEL_VALIDATOR
+    validate: {
+      validator: (value: string) => !value || TEL_VALIDATOR.test(value)
+    },
+    default: null
   },
   fixPhoneNumber: {
     type: SchemaTypes.String,
-    validate: TEL_VALIDATOR
+    validate: {
+      validator: (value: string) => !value || TEL_VALIDATOR.test(value)
+    },
+    default: null
   },
   email: {
     type: SchemaTypes.String,
-    validate: EMAIL_VALIDATOR
+    validate: {
+      validator: (value: string) => !value || EMAIL_VALIDATOR.test(value)
+    },
+    default: null
   },
   receptions: {
     type: SchemaTypes.Number,
-    min: 0
+    min: 0,
+    default: null
   },
-  availability: AvailabilitySchema,
+  availability: {
+    type: AvailabilitySchema,
+    default: null
+  },
   _search: {
     type: SchemaTypes.String,
     index: true

@@ -18,8 +18,8 @@ export default function AsmatDetailsPage() {
       toastSuccess('L’assistante maternelle a été mise à jour.');
     },
     onError(error) {
-      console.error(error);
       toastError('La modification de l\'assistante maternelle a échouée. Veuillez réessayer plus tard.');
+      console.error(error);
     }
   });
   const handleUpdateAsmat = (asmat: Asmat) => mutate({ id: asmat._id, asmat });

@@ -4,7 +4,7 @@ import { Home, MailOutline, Phone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { At, Cellphone } from 'mdi-material-ui';
-import { useFormik } from 'formik';
+import { FormikErrors, FormikTouched, useFormik } from 'formik';
 import AsmatCard from '../ui/AsmatCard';
 import { AsmatDetailsValues } from '../../models/asmat-form';
 
@@ -14,21 +14,25 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+type AsmatContactValues = Pick<AsmatDetailsValues, 'addressStreet'
+  | 'addressComplement'
+  | 'addressZipCode'
+  | 'addressCity'
+  | 'addressZone'
+  | 'email'
+  | 'cellPhoneNumber'
+  | 'fixPhoneNumber'>;
+
 type Props = {
-  values: Pick<AsmatDetailsValues, 'addressStreet'
-    | 'addressComplement'
-    | 'addressZipCode'
-    | 'addressCity'
-    | 'addressZone'
-    | 'email'
-    | 'cellPhoneNumber'
-    | 'fixPhoneNumber'>,
+  values: AsmatContactValues,
   onChange: (ReturnType<typeof useFormik>)['handleChange'],
-  readOnly: boolean,
-  disabled: boolean
+  touched: FormikTouched<AsmatContactValues>,
+  errors: FormikErrors<AsmatContactValues>,
+  readOnly?: boolean,
+  disabled: boolean,
 };
 
-const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) => {
+const AsmatContactCard: FC<Props> = ({ values, onChange, touched, errors, readOnly, disabled }) => {
   const classes = useStyles();
   return (
     <AsmatCard title="Contact" icon={<MailOutline/>}>
@@ -44,6 +48,8 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) =
                      value={values.addressStreet}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.addressStreet && errors.addressStreet}
+                     error={touched.addressStreet && !!errors.addressStreet}
                      InputProps={{
                        readOnly,
                        startAdornment: (
@@ -62,6 +68,8 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) =
                      value={values.addressComplement}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.addressComplement && errors.addressComplement}
+                     error={touched.addressComplement && !!errors.addressComplement}
                      InputProps={{ readOnly }}/>
         </Grid>
         <Grid item xs={6} sm={4} md={3}>
@@ -73,6 +81,8 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) =
                      value={values.addressZipCode}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.addressZipCode && errors.addressZipCode}
+                     error={touched.addressZipCode && !!errors.addressZipCode}
                      InputProps={{ readOnly }}/>
         </Grid>
         <Grid item xs={12} sm={6} md={5}>
@@ -84,6 +94,8 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) =
                      value={values.addressCity}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.addressCity && errors.addressCity}
+                     error={touched.addressCity && !!errors.addressCity}
                      InputProps={{ readOnly }}/>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
@@ -95,6 +107,8 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) =
                      value={values.addressZone}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.addressZone && errors.addressZone}
+                     error={touched.addressZone && !!errors.addressZone}
                      InputProps={{ readOnly }}/>
         </Grid>
       </Grid>
@@ -110,6 +124,8 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) =
                      value={values.email}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.email && errors.email}
+                     error={touched.email && !!errors.email}
                      InputProps={{
                        readOnly,
                        startAdornment: (
@@ -130,6 +146,8 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) =
                      value={values.fixPhoneNumber}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.fixPhoneNumber && errors.fixPhoneNumber}
+                     error={touched.fixPhoneNumber && !!errors.fixPhoneNumber}
                      InputProps={{
                        readOnly,
                        startAdornment: (
@@ -147,6 +165,8 @@ const AsmatContactCard: FC<Props> = ({ values, onChange, readOnly, disabled }) =
                      value={values.cellPhoneNumber}
                      onChange={onChange}
                      disabled={disabled}
+                     helperText={touched.cellPhoneNumber && errors.cellPhoneNumber}
+                     error={touched.cellPhoneNumber && !!errors.cellPhoneNumber}
                      InputProps={{
                        readOnly,
                        startAdornment: (
