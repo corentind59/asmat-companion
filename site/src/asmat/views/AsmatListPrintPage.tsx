@@ -4,7 +4,7 @@ import { Alert } from '@material-ui/lab';
 import { getCities, getZonesForCity } from '../../city/resources';
 import { useState } from 'react';
 import CitySelectionStepper from '../../city/components/business/CitySelectionStepper';
-import { getAsmats } from '../services/resources';
+import { getAsmatsByCityAndZones } from '../services/resources';
 import AsmatsPrintList from '../components/business/AsmatsPrintList';
 
 export default function AsmatListPrintPage() {
@@ -24,7 +24,7 @@ export default function AsmatListPrintPage() {
   const zonesByCity = Object.fromEntries(zoneQueries.map(({ data }, idx) => ([selectedCities[idx], data as string[]])));
 
   const queryAsmats = useMutation('getAsmats', (zoneByCities: Array<[city: string, zones: string[]]>) =>
-    Promise.all(zoneByCities.map(([city, zones]) => getAsmats({
+    Promise.all(zoneByCities.map(([city, zones]) => getAsmatsByCityAndZones({
       city,
       ...(zones.length > 0 && { zones })
     })))

@@ -18,7 +18,7 @@ import { DateTime } from 'luxon';
 import { Cancel, Check } from '@material-ui/icons';
 import ButtonProgress from '../../../common/components/ButtonProgress';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   adherent: {
     color: green[500]
   },
@@ -45,7 +45,7 @@ const AsmatAdhesionCard: FC<Props> = ({ adhesion, onAdhere }) => {
     (adhesion.status === 'normal' ? <ShieldCheck className={classes.adherent}/> :
       (adhesion.status === 'remind' ? <ShieldAlertOutline className={classes.remind}/> :
         <ShieldAlertOutline className={classes.expired}/>));
-  const handleAdhereClick = () => void setShowAdhereDialog(true);
+  const handleAdhereClick = () => setShowAdhereDialog(true);
   const handleAdhereConfirm = async () => {
     setAdhering(true);
     await onAdhere();

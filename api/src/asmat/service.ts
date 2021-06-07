@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { Adhesion, Asmat, AsmatOutput } from './model';
 
-export function toAsmatOutput(ret: Asmat) {
+export function toAsmatOutput(ret: Asmat): AsmatOutput {
   const adhesion = ((): Adhesion | null => {
     if (!ret.lastAdhesionDate) {
       return null;

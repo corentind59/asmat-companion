@@ -12,6 +12,7 @@ import AsmatSearchPage from '../../asmat/views/AsmatSearchPage';
 import AsmatDetailsPage from '../../asmat/views/AsmatDetailsPage';
 import AsmatAddPage from '../../asmat/views/AsmatAddPage';
 import AsmatListPrintPage from '../../asmat/views/AsmatListPrintPage';
+import AsmatRemindsPage from '../../asmat/views/AsmatRemindsPage';
 
 const drawerWidth = '20vw';
 const drawerMinWidth = '256px';
@@ -79,6 +80,7 @@ export default function HomePage() {
           <Route path="/asmats/search" exact component={AsmatSearchPage}/>
           <Route path="/asmats/add" exact component={AsmatAddPage}/>
           <Route path="/asmats/print" exact component={AsmatListPrintPage}/>
+          <Route path="/asmats/reminds" exact component={AsmatRemindsPage}/>
           <Route path="/asmats/:asmatId" exact component={AsmatDetailsPage}/>
           <Route path="/" exact component={DashboardPage}/>
           <Redirect to="/"/>

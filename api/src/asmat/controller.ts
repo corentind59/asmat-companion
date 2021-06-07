@@ -1,13 +1,27 @@
 import AsmatModel, { AsmatOutput } from './model';
 import { BadRequest, Created, NotFound, Ok } from '@corentind/expressive';
 import { getNewAdhesionDate } from './service';
+import { DateTime } from 'luxon';
 
-export async function getAsmats({ city, zone }: { city?: string, zone?: string }) {
+type GetAsmatsQueryParams = {
+  city?: string,
+  zone?: string,
+  adhesionEndDateBefore?: string;
+};
+
+export async function getAsmats({ city, zone, adhesionEndDateBefore }: GetAsmatsQueryParams) {
   const zones = zone?.split(',');
-  const asmats = await AsmatModel.find({
-    'address.city': city,
-    ...(zones && { 'address.zone': { $in: zones } })
-  });
+  const filter = {
+    ...(city && { 'address.city': city }),
+    ...(zones && { 'address.zone': { $in: zones } }),
+    ...(adhesionEndDateBefore && {
+      lastAdhesionDate: {
+        $ne: null,
+        $lt: DateTime.fromISO(adhesionEndDateBefore).minus({ year: 1 }).toJSDate()
+      }
+    })
+  };
+  const asmats = await AsmatModel.find(filter);
   const jsonAsmats = asmats.map(doc => doc.toJSON());
   return new Ok(jsonAsmats);
 }

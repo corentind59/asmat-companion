@@ -22,6 +22,7 @@ export default function mongoDB(): RequestHandler {
 function connectToDatabase(databaseURL: string) {
   return mongoose.connect(databaseURL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
   });
 }

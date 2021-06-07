@@ -5,9 +5,10 @@ import secured from '../auth/cognito-middleware';
 
 const router = Router();
 
-router.get('/asmats', secured(), handle(({ query: { city, zone } }) => getAsmats({
+router.get('/asmats', secured(), handle(({ query: { city, zone, adhesionEndDateBefore } }) => getAsmats({
   city: city?.toString(),
-  zone: zone?.toString()
+  zone: zone?.toString(),
+  adhesionEndDateBefore: adhesionEndDateBefore?.toString()
 })));
 router.get('/asmats/search', secured(), handle(({ query: { q } }) => searchAsmats(q)));
 router.get('/asmats/:id', secured(), handle(({ params: { id } }) => getById(id)));

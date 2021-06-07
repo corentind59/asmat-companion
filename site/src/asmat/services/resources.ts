@@ -1,8 +1,14 @@
 import { request } from '../../api/request';
 import { Asmat, AsmatCreationInput, AsmatSummary } from '../models/asmat';
+import { DateTime } from 'luxon';
 
-export function getAsmats(params: { city: string, zones?: string[] }) {
+export function getAsmatsByCityAndZones(params: { city: string, zones?: string[] }) {
   const uri = `/asmats?city=${params.city}${params.zones ? `&zone=${params.zones.join(',')}` : ''}`;
+  return request<Asmat[]>(uri);
+}
+
+export function getAsmatsByAdhesionEndDateBefore(adhesionEndDateBefore: DateTime) {
+  const uri = `/asmats?adhesionEndDateBefore=${adhesionEndDateBefore.toISODate()}`;
   return request<Asmat[]>(uri);
 }
 
