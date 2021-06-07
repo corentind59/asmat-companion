@@ -7,14 +7,16 @@ import { adhereById, getAsmatById, updateAsmatById } from '../services/resources
 import { AsmatDetailsSkeleton } from '../components/ui/AsmatDetailsSkeleton';
 import { Asmat } from '../models/asmat';
 import { toastError, toastSuccess } from '../../common/toast';
+import QueryKeys from '../../api/query-keys';
 
 export default function AsmatDetailsPage() {
   const { asmatId } = useParams<{ asmatId: string }>();
   const queryClient = useQueryClient();
-  const { isLoading, isError: isQueryError, data } = useQuery(['asmat', asmatId], () => getAsmatById(asmatId));
-  const { mutateAsync: update } = useMutation(['updateAsmat', asmatId], updateAsmatById, {
+  const { isLoading, isError: isQueryError, data } = useQuery(QueryKeys.GET_ASMAT_BY_ID(asmatId), () => getAsmatById(asmatId));
+  const { mutateAsync: update } = useMutation(QueryKeys.UPDATE_ASMAT(asmatId), updateAsmatById, {
     onSuccess(updatedAsmat) {
-      queryClient.setQueryData(['asmat', asmatId], updatedAsmat);
+      queryClient.resetQueries(QueryKeys.ALL_ASMATS)
+        .then(() => queryClient.setQueryData(QueryKeys.GET_ASMAT_BY_ID(asmatId), updatedAsmat));
       toastSuccess('L’assistante maternelle a été mise à jour.');
     },
     onError(error) {
@@ -22,9 +24,10 @@ export default function AsmatDetailsPage() {
       console.error(error);
     }
   });
-  const { mutateAsync: adhere } = useMutation(['adhere', asmatId], adhereById, {
+  const { mutateAsync: adhere } = useMutation(QueryKeys.UPDATE_ASMAT_ADHESION(asmatId), adhereById, {
     onSuccess(updatedAsmat) {
-      queryClient.setQueryData(['asmat', asmatId], updatedAsmat);
+      queryClient.resetQueries(QueryKeys.ALL_ASMATS)
+        .then(() => queryClient.setQueryData(QueryKeys.GET_ASMAT_BY_ID(asmatId), updatedAsmat));
       toastSuccess('L’assistante maternelle a été mise à jour.');
     },
     onError(error) {

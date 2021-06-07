@@ -6,24 +6,26 @@ import { useState } from 'react';
 import CitySelectionStepper from '../../city/components/business/CitySelectionStepper';
 import { getAsmatsByCityAndZones } from '../services/resources';
 import AsmatsPrintList from '../components/business/AsmatsPrintList';
+import QueryKeys from '../../api/query-keys';
 
 export default function AsmatListPrintPage() {
   const {
     isLoading: loadingCities,
     isError: cityError,
     data: cities
-  } = useQuery(['getCities'], getCities);
+  } = useQuery(QueryKeys.GET_CITIES, getCities);
   const [selectedCities, setSelectedCities] = useState<string[]>([]);
   const handleCitiesSelected = (cities: string[]) => setSelectedCities(cities);
 
   const zoneQueries = useQueries(selectedCities.map(city => ({
-    queryKey: ['getZonesForCity', city],
+    queryKey: QueryKeys.GET_ZONES_BY_CITY(city),
     queryFn: () => getZonesForCity(city)
   })));
   const isZoneError = zoneQueries.some(({ isError }) => isError);
   const zonesByCity = Object.fromEntries(zoneQueries.map(({ data }, idx) => ([selectedCities[idx], data as string[]])));
 
-  const queryAsmats = useMutation('getAsmats', (zoneByCities: Array<[city: string, zones: string[]]>) =>
+  const queryAsmats = useMutation(QueryKeys.GET_ASMATS_BY_PARAMS(zonesByCity),
+    (zoneByCities: Array<[city: string, zones: string[]]>) =>
     Promise.all(zoneByCities.map(([city, zones]) => getAsmatsByCityAndZones({
       city,
       ...(zones.length > 0 && { zones })

@@ -7,6 +7,7 @@ import { useQuery } from 'react-query';
 import { searchAsmats } from '../services/resources';
 import { Alert } from '@material-ui/lab';
 import AsmatsList from '../components/business/AsmatsList';
+import QueryKeys from '../../api/query-keys';
 
 const useStyles = makeStyles(theme => ({
   searchInput: {
@@ -23,7 +24,7 @@ export default function AsmatSearchPage() {
     isLoading,
     isError,
     data
-  } = useQuery(['searchAsmats', searchQuery], () => searchQuery ? searchAsmats(searchQuery) : []);
+  } = useQuery(QueryKeys.GET_ASMATS_BY_QUERY(searchQuery || ''), () => searchQuery ? searchAsmats(searchQuery) : []);
   const handleSearchAsmats = (query: string) => history.push({ search: `q=${encodeURIComponent(query)}` });
 
   return (
