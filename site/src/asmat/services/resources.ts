@@ -1,6 +1,11 @@
 import { request } from '../../api/request';
 import { Asmat, AsmatCreationInput, AsmatSummary } from '../models/asmat';
 
+export function getAsmats(params: { city: string, zones?: string[] }) {
+  const uri = `/asmats?city=${params.city}${params.zones ? `&zone=${params.zones.join(',')}` : ''}`;
+  return request<Asmat[]>(uri);
+}
+
 export function searchAsmats(query: string) {
   return request<AsmatSummary[]>(`/asmats/search?q=${query}`);
 }

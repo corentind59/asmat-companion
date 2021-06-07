@@ -5,7 +5,7 @@ import ListItem, { ListItemProps } from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { ComponentProps, ElementType, useState } from 'react';
-import { AccountPlusOutline, HumanBabyChangingTable } from 'mdi-material-ui';
+import { AccountPlusOutline, HumanBabyChangingTable, Printer } from 'mdi-material-ui';
 import { ExpandLess, ExpandMore, Search } from '@material-ui/icons';
 import { Collapse } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -64,6 +64,7 @@ export default function NavigationMenu() {
         <List component="div" disablePadding className={classes.nested}>
           <ListItemLink label="Rechercher" icon={<Search/>} to="/asmats/search"/>
           <ListItemLink label="Ajouter" icon={<AccountPlusOutline/>} to="/asmats/add"/>
+          <ListItemLink label="Imprimer une liste" icon={<Printer/>} to="/asmats/print"/>
         </List>
       </Collapse>
     </List>

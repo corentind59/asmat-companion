@@ -1,10 +1,14 @@
 import { Router } from 'express';
 import { handle } from '@corentind/expressive';
-import { adhere, createAsmat, getById, searchAsmats, updateAsmatById } from './controller';
+import { adhere, createAsmat, getAsmats, getById, searchAsmats, updateAsmatById } from './controller';
 import secured from '../auth/cognito-middleware';
 
 const router = Router();
 
+router.get('/asmats', secured(), handle(({ query: { city, zone } }) => getAsmats({
+  city: city?.toString(),
+  zone: zone?.toString()
+})));
 router.get('/asmats/search', secured(), handle(({ query: { q } }) => searchAsmats(q)));
 router.get('/asmats/:id', secured(), handle(({ params: { id } }) => getById(id)));
 

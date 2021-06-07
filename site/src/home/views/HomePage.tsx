@@ -11,6 +11,7 @@ import NavigationMenu from '../components/NavigationMenu';
 import AsmatSearchPage from '../../asmat/views/AsmatSearchPage';
 import AsmatDetailsPage from '../../asmat/views/AsmatDetailsPage';
 import AsmatAddPage from '../../asmat/views/AsmatAddPage';
+import AsmatListPrintPage from '../../asmat/views/AsmatListPrintPage';
 
 const drawerWidth = '20vw';
 const drawerMinWidth = '256px';
@@ -49,10 +50,10 @@ export default function HomePage() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed" className={classes.appBar}>
+      <AppBar position="fixed" className={`${classes.appBar} screen-only`}>
         <Toolbar>
           <Box flexGrow={1} display="flex" alignItems="center">
-            <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" width={40}/>
+            <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" width={40} className="screen-only"/>
             <Typography className={classes.appName} variant="h6" noWrap>
               Asmat Companion
             </Typography>
@@ -62,21 +63,22 @@ export default function HomePage() {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer className={classes.drawer}
+      <Drawer className={`${classes.drawer} screen-only`}
               variant="permanent"
               classes={{
                 paper: classes.drawerPaper
               }}>
         <div className={classes.drawerContainer}>
-          <Toolbar/>
+          <Toolbar className="screen-only"/>
           <NavigationMenu/>
         </div>
       </Drawer>
       <main className={classes.content}>
-        <Toolbar/>
+        <Toolbar className="screen-only"/>
         <Switch>
           <Route path="/asmats/search" exact component={AsmatSearchPage}/>
           <Route path="/asmats/add" exact component={AsmatAddPage}/>
+          <Route path="/asmats/print" exact component={AsmatListPrintPage}/>
           <Route path="/asmats/:asmatId" exact component={AsmatDetailsPage}/>
           <Route path="/" exact component={DashboardPage}/>
           <Redirect to="/"/>

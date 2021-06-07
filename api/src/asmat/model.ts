@@ -1,4 +1,4 @@
-import mongoose, { Document, LeanDocument, Schema, ToObjectOptions } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import { EMAIL_VALIDATOR, TEL_VALIDATOR } from '../utils/validation';
 import { normalizeSearchField } from '../utils/normalize';
 import { toAsmatOutput } from './service';
@@ -162,13 +162,17 @@ AsmatSchema.pre<AsmatDocument>('save', function (next) {
     this.lastName,
     this.cellPhoneNumber,
     this.fixPhoneNumber,
-    this.address?.street,
-    this.address?.city,
-    this.address?.zone,
+    this.address.street,
+    this.address.city,
+    this.address.zone,
     this.email
   ].filter(f => typeof f === 'string')
     .map(f => normalizeSearchField(f as string))
     .join(',');
+
+  if (this.address?.city) {
+    this.address.city = this.address.city.toUpperCase();
+  }
   next();
 });
 

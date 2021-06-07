@@ -3,6 +3,7 @@ import expressive from '@corentind/expressive';
 import cors from 'cors';
 import mongoDB from './database';
 import { AsmatRoutes } from './asmat/router';
+import { CityRoutes } from './city/router';
 import { handleMongooseError } from './utils/validation';
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(mongoDB());
 
 // Routes
 app.use(AsmatRoutes);
+app.use(CityRoutes);
 
 // Expressive
 app.use(handleMongooseError());

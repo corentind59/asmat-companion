@@ -2,6 +2,16 @@ import AsmatModel, { AsmatOutput } from './model';
 import { BadRequest, Created, NotFound, Ok } from '@corentind/expressive';
 import { getNewAdhesionDate } from './service';
 
+export async function getAsmats({ city, zone }: { city?: string, zone?: string }) {
+  const zones = zone?.split(',');
+  const asmats = await AsmatModel.find({
+    'address.city': city,
+    ...(zones && { 'address.zone': { $in: zones } })
+  });
+  const jsonAsmats = asmats.map(doc => doc.toJSON());
+  return new Ok(jsonAsmats);
+}
+
 export async function searchAsmats(query: any) {
   if (typeof query !== 'string') {
     throw new BadRequest({
