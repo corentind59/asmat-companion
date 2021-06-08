@@ -15,6 +15,30 @@ inputs:
         Properties:
           AdminCreateUserConfig:
             AllowAdminCreateUserOnly: true
+            InviteMessageTemplate:
+              EmailSubject: Bienvenue sur Amsat Companion !
+              EmailMessage: >
+                <p>
+                  Bonjour,
+                <p>
+
+                <p>
+                  Vous avez été invité(e) à rejoindre l'application Asmat Companion.<br/>
+                  Pour accéder à l'application, cliquez sur <a href="#">ce lien</a> et connectez-vous avec vos identifiants :
+                </p>
+
+                <ul>
+                  <li>Nom d'utilisateur : {username}</li>
+                  <li>Mot de passe : {####}</li>
+                </ul>
+
+                <p>
+                  Àq très bientôt !
+                </p>
+
+                <p>
+                  <em>Ce message a été généré et envoyé automatiquement, merci de ne pas y répondre.</em>
+                </p>
           AliasAttributes:
           - email
           MfaConfiguration: OFF
@@ -47,12 +71,6 @@ inputs:
           - COGNITO
           UserPoolId:
             Ref: UserPool
-      UserPoolDomain:
-        Type: AWS::Cognito::UserPoolDomain
-        Properties:
-          UserPoolId:
-            Ref: UserPool
-          Domain: asmat-companion
     Outputs:
       UserPoolId:
         Description: User Pool ID
