@@ -24,7 +24,7 @@ inputs:
 
                 <p>
                   Vous avez été invité(e) à rejoindre l'application Asmat Companion.<br/>
-                  Pour accéder à l'application, cliquez sur <a href="#">ce lien</a> et connectez-vous avec vos identifiants :
+                  Pour accéder à l'application, rendez vous sur <a href="${output:asmat-companion:frontend.url}">ce lien</a> et connectez-vous avec vos identifiants :
                 </p>
 
                 <ul>
@@ -33,7 +33,7 @@ inputs:
                 </ul>
 
                 <p>
-                  Àq très bientôt !
+                  À très bientôt !
                 </p>
 
                 <p>
