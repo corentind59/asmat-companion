@@ -6,7 +6,7 @@ import AsmatIdentityCard from './AsmatIdentityCard';
 import { Box, Grid } from '@material-ui/core';
 import ButtonProgress from '../../../common/components/ButtonProgress';
 import { Add } from '@material-ui/icons';
-import { Asmat, AsmatCreationInput } from '../../models/asmat';
+import { AsmatCreationInput } from '../../models/asmat';
 import AsmatContactCard from './AsmatContactCard';
 import { TEL_VALIDATOR } from '../../../common/validators';
 import { fromAsmatCreationValues } from '../../services/behaviors';
