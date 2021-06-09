@@ -61,13 +61,14 @@ const AsmatDetails: FC<Props> = ({ asmat, onUpdate, onAdhere }) => {
   });
   const handleReadOnlySwitchToggled = () => {
     if (readOnly) {
-      return void setReadOnly(false);
+      return setReadOnly(false);
     }
     formik.resetForm();
     setReadOnly(true);
   };
   useEffect(() => {
     formik.resetForm({ values: toAsmatUpdateValues(asmat) });
+    // eslint-disable-next-line
   }, [asmat]);
 
   return (

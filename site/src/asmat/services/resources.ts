@@ -45,3 +45,9 @@ export function adhereById(id: string) {
     method: 'POST'
   });
 }
+
+export function unsubscribeById(id: string) {
+  return request<Asmat>(`/asmats/${id}/unsubscribe`, {
+    method: 'POST'
+  });
+}
