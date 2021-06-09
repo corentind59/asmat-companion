@@ -1,8 +1,7 @@
 import { FC, useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { ShieldRemoveOutline } from 'mdi-material-ui';
-import ButtonProgress from '../../../common/components/ButtonProgress';
-import { Cancel, Check } from '@material-ui/icons';
+import ConfirmDialog from '../../../common/components/ConfirmDialog';
 
 type Props = {
   onUnsubscribe: () => unknown
@@ -10,12 +9,9 @@ type Props = {
 
 const AsmatUnsubscribeButton: FC<Props> = ({ onUnsubscribe }) => {
   const [showDialog, setShowDialog] = useState(false);
-  const [unsubscribing, setUnsubscribing] = useState(false);
   const handleButtonClicked = () => setShowDialog(true);
   const handleConfirm = async () => {
-    setUnsubscribing(true);
     await onUnsubscribe();
-    setUnsubscribing(false);
     setShowDialog(false);
   };
 
@@ -26,28 +22,12 @@ const AsmatUnsubscribeButton: FC<Props> = ({ onUnsubscribe }) => {
               onClick={handleButtonClicked}>
         Arrêter
       </Button>
-      <Dialog disableBackdropClick
-              disableEscapeKeyDown
-              open={showDialog}>
-        <DialogTitle>Confirmer l'arrêt de l'adhésion ?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            L'assistante maternelle sera retirée de la liste des adhérentes.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <ButtonProgress loading={unsubscribing}
-                          color="primary"
-                          startIcon={<Check/>}
-                          onClick={() => handleConfirm()}>
-            {({ loading }) => loading ? 'Chargement...' : 'Confirmer'}
-          </ButtonProgress>
-          <Button startIcon={<Cancel/>}
-                  onClick={() => setShowDialog(false)}>
-            Annuler
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDialog open={showDialog}
+                     title="Confirmer l'arrêt de l'adhésion ?"
+                     onConfirm={handleConfirm}
+                     onCancel={() => setShowDialog(false)}>
+        L'assistante maternelle sera retirée de la liste des adhérentes.
+      </ConfirmDialog>
     </>
   );
 };
