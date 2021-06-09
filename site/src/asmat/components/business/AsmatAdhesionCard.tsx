@@ -3,9 +3,10 @@ import AsmatCard from '../ui/AsmatCard';
 import { ShieldAlertOutline, ShieldCheck, ShieldRemove } from 'mdi-material-ui';
 import { makeStyles } from '@material-ui/core/styles';
 import { green, orange, red } from '@material-ui/core/colors';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { DateTime } from 'luxon';
 import AsmatAdhereButton from './AsmatAdhereButton';
+import AsmatUnsubscribeButton from './AsmatUnsubscribeButton';
 
 const useStyles = makeStyles(() => ({
   adherent: {
@@ -19,9 +20,10 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-type Props = ComponentPropsWithoutRef<typeof AsmatAdhereButton>;
+type Props = ComponentPropsWithoutRef<typeof AsmatAdhereButton> &
+  ComponentPropsWithoutRef<typeof AsmatUnsubscribeButton>;
 
-const AsmatAdhesionCard: FC<Props> = ({ adhesion, onAdhere }) => {
+const AsmatAdhesionCard: FC<Props> = ({ adhesion, onAdhere, onUnsubscribe }) => {
   const classes = useStyles();
   const title = !adhesion ? 'Non adhérent(e)' :
     (adhesion.status === 'expired' ? 'Adhésion expirée' : 'Adhérent(e)');
@@ -49,11 +51,20 @@ const AsmatAdhesionCard: FC<Props> = ({ adhesion, onAdhere }) => {
           </Typography>
         );
       })()}
-      {(!adhesion || adhesion.status !== 'normal') && (
-        <Box display="flex" justifyContent="center" marginTop={1}>
-          <AsmatAdhereButton adhesion={adhesion} onAdhere={onAdhere}/>
-        </Box>
-      )}
+      <Box display="flex" justifyContent="center" marginTop={2}>
+        <Grid container spacing={2} justify="center">
+          {adhesion?.status === 'expired' && (
+            <Grid item>
+              <AsmatUnsubscribeButton onUnsubscribe={onUnsubscribe}/>
+            </Grid>
+          )}
+          {(!adhesion || adhesion.status !== 'normal') && (
+            <Grid item>
+              <AsmatAdhereButton adhesion={adhesion} onAdhere={onAdhere}/>
+            </Grid>
+          )}
+        </Grid>
+      </Box>
     </AsmatCard>
   );
 };

@@ -10,6 +10,7 @@ const QueryKeys = {
 
   UPDATE_ASMAT: (id: string) => ['PUT', 'asmats', id],
   UPDATE_ASMAT_ADHESION: (id: string) => ['PUT', 'asmats', id, 'adhesion'],
+  UPDATE_ASMAT_UNSUBSCRIPTION: (id: string) => ['PUT', 'asmats', id, 'unsubscription'],
 
   // Cities
   GET_CITIES: ['GET', 'cities'],

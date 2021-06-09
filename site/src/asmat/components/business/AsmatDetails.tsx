@@ -42,10 +42,11 @@ const asmatDetailsSchema: yup.SchemaOf<AsmatUpdateValues> = yup.object().shape({
 type Props = {
   asmat: Asmat,
   onUpdate: (updatedAsmat: Asmat) => unknown,
-  onAdhere: () => unknown
+  onAdhere: () => unknown,
+  onUnsubscribe: () => unknown
 };
 
-const AsmatDetails: FC<Props> = ({ asmat, onUpdate, onAdhere }) => {
+const AsmatDetails: FC<Props> = ({ asmat, onUpdate, onAdhere, onUnsubscribe }) => {
   const [readOnly, setReadOnly] = useState(true);
   const initialValues: AsmatUpdateValues = toAsmatUpdateValues(asmat);
   const formik = useFormik({
@@ -118,7 +119,8 @@ const AsmatDetails: FC<Props> = ({ asmat, onUpdate, onAdhere }) => {
           </Grid>
           <Grid item sm={12} lg={4}>
             <AsmatAdhesionCard adhesion={asmat.adhesion}
-                               onAdhere={onAdhere}/>
+                               onAdhere={onAdhere}
+                               onUnsubscribe={onUnsubscribe}/>
           </Grid>
         </Grid>
       </Grid>
