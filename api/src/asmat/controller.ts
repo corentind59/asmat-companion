@@ -1,6 +1,6 @@
-import AsmatModel, { AsmatOutput } from './model';
+import AsmatModel from './model';
 import { BadRequest, Created, NotFound, Ok } from '@corentind/expressive';
-import { getNewAdhesionDate } from './service';
+import { findByIdOrThrow, getNewAdhesionDate, toAdhesion } from './service';
 import { DateTime } from 'luxon';
 
 type GetAsmatsQueryParams = {
@@ -57,12 +57,7 @@ export async function createAsmat(body: any) {
 }
 
 export async function updateAsmatById(id: string, body: any) {
-  const originalAsmat = await AsmatModel.findById(id);
-  if (!originalAsmat) {
-    throw new NotFound({
-      code: 'asmat-not-found'
-    });
-  }
+  const originalAsmat = await findByIdOrThrow(id);
   originalAsmat.set({
     ...body,
     _id: id,
@@ -73,14 +68,9 @@ export async function updateAsmatById(id: string, body: any) {
 }
 
 export async function adhere(id: string) {
-  const asmat = await AsmatModel.findById(id);
-  if (!asmat) {
-    throw new NotFound({
-      code: 'asmat-not-found'
-    });
-  }
+  const asmat = await findByIdOrThrow(id);
   try {
-    const nextAdhesionDate = getNewAdhesionDate(asmat.toJSON() as AsmatOutput);
+    const nextAdhesionDate = getNewAdhesionDate(asmat.lastAdhesionDate);
     asmat.set({ lastAdhesionDate: nextAdhesionDate });
     const updatedAsmat = await asmat.save();
     return new Ok(updatedAsmat.toJSON());
@@ -93,4 +83,17 @@ export async function adhere(id: string) {
     }
     throw e;
   }
+}
+
+export async function unsubscribe(id: string) {
+  const asmat = await findByIdOrThrow(id);
+  if (toAdhesion(asmat.lastAdhesionDate)?.status !== 'expired' ?? true) {
+    throw new BadRequest({
+      code: 'unsubscription-error',
+      message: 'Asmat adhesion has not expired yet.'
+    });
+  }
+  asmat.set({ lastAdhesionDate: null });
+  const updatedAsmat = await asmat.save();
+  return new Ok(updatedAsmat.toJSON());
 }
