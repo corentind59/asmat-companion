@@ -1,16 +1,21 @@
 import { FC, useState } from 'react';
-import { Button } from '@material-ui/core';
-import { ShieldEditOutline } from 'mdi-material-ui';
+import { Button, IconButton, Tooltip } from '@material-ui/core';
+import { ShieldEdit, ShieldEditOutline } from 'mdi-material-ui';
 import { DateTime } from 'luxon';
 import { Adhesion } from '../../models/adhesion';
 import ConfirmDialog from '../../../common/components/ConfirmDialog';
 
 type Props = {
   adhesion: Adhesion | null,
-  onAdhere: () => unknown
+  onAdhere: () => unknown,
+  buttonStyle?: 'button' | 'icon';
 };
 
-const AsmatAdhereButton: FC<Props> = ({ adhesion, onAdhere }) => {
+const AsmatAdhereButton: FC<Props> = ({
+                                        adhesion,
+                                        onAdhere,
+                                        buttonStyle = 'button'
+                                      }) => {
   const [showDialog, setShowDialog] = useState(false);
   const handleButtonClicked = () => setShowDialog(true);
   const handleConfirm = async () => {
@@ -20,12 +25,20 @@ const AsmatAdhereButton: FC<Props> = ({ adhesion, onAdhere }) => {
 
   return (
     <>
-      <Button variant="contained"
-              color="primary"
-              startIcon={<ShieldEditOutline/>}
-              onClick={handleButtonClicked}>
-        {adhesion ? 'Ré-adhérer' : 'Adhérer'}
-      </Button>
+      {buttonStyle === 'icon' ?
+        <Tooltip title="Ré-adhérer">
+          <IconButton color="primary"
+                      onClick={handleButtonClicked}>
+            <ShieldEdit/>
+          </IconButton>
+        </Tooltip> :
+        <Button variant="contained"
+                color="primary"
+                startIcon={<ShieldEditOutline/>}
+                onClick={handleButtonClicked}>
+          {adhesion ? 'Ré-adhérer' : 'Adhérer'}
+        </Button>
+      }
       <ConfirmDialog open={showDialog}
                      title="Confirmer l'adhésion ?"
                      onConfirm={handleConfirm}
