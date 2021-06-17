@@ -5,6 +5,7 @@ name: frontend
 
 inputs:
   region: eu-west-1
+  domain: manager${env:SITE_DOMAIN_SUFFIX}.allonounouicibebe.fr
   src:
     src: ./
     hook: yarn build
